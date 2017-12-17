@@ -1,0 +1,176 @@
+
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SearchExample", "SearchExample\SearchExample.csproj", "{05C73AF2-B642-44C8-9693-898A68E54975}"
+EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "LINQSamples", "LINQSamples\LINQSamples.xproj", "{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TimelineGenerator", "TimelineGenerator\TimelineGenerator.csproj", "{715011F4-B0E8-4E1E-A44A-93E367DA730D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{143E9BA4-ECB4-4C80-BBE7-36BB0531AFFB}"
+	ProjectSection(SolutionItems) = preProject
+		Draft.md = Draft.md
+		README.md = README.md
+		LICENSE = LICENSE
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RxSamples", "RxSamples\RxSamples.csproj", "{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Marble Diagrams", "Marble Diagrams", "{1066D06C-2D5F-45EB-AB16-F149A198E490}"
+	ProjectSection(SolutionItems) = preProject
+		Marble Diagrams\Aggregate.png = Marble Diagrams\Aggregate.png
+		Marble Diagrams\Amb.png = Marble Diagrams\Amb.png
+		Marble Diagrams\ColdObservableSample.png = Marble Diagrams\ColdObservableSample.png
+		Marble Diagrams\CombineLatest.png = Marble Diagrams\CombineLatest.png
+		Marble Diagrams\Concat.png = Marble Diagrams\Concat.png
+		Marble Diagrams\DefaultIfEmpty.png = Marble Diagrams\DefaultIfEmpty.png
+		Marble Diagrams\Delay.png = Marble Diagrams\Delay.png
+		Marble Diagrams\DistinctUntilChanged.png = Marble Diagrams\DistinctUntilChanged.png
+		Marble Diagrams\ElementAt.png = Marble Diagrams\ElementAt.png
+		Marble Diagrams\Empty.png = Marble Diagrams\Empty.png
+		Marble Diagrams\Example.png = Marble Diagrams\Example.png
+		Marble Diagrams\First.png = Marble Diagrams\First.png
+		Marble Diagrams\FromAsync.png = Marble Diagrams\FromAsync.png
+		Marble Diagrams\FromEvent.png = Marble Diagrams\FromEvent.png
+		Marble Diagrams\Generate.png = Marble Diagrams\Generate.png
+		Marble Diagrams\GroupBy.png = Marble Diagrams\GroupBy.png
+		Marble Diagrams\GroupByAdvanced.png = Marble Diagrams\GroupByAdvanced.png
+		Marble Diagrams\HotObservableSample.png = Marble Diagrams\HotObservableSample.png
+		Marble Diagrams\Interval.png = Marble Diagrams\Interval.png
+		Marble Diagrams\Last.png = Marble Diagrams\Last.png
+		Marble Diagrams\Materialize_OnCompleted.png = Marble Diagrams\Materialize_OnCompleted.png
+		Marble Diagrams\Materialize_OnError.png = Marble Diagrams\Materialize_OnError.png
+		Marble Diagrams\Materialize_OnNext.png = Marble Diagrams\Materialize_OnNext.png
+		Marble Diagrams\Max.png = Marble Diagrams\Max.png
+		Marble Diagrams\Merge.png = Marble Diagrams\Merge.png
+		Marble Diagrams\Never.png = Marble Diagrams\Never.png
+		Marble Diagrams\OnErrorResumeNext.png = Marble Diagrams\OnErrorResumeNext.png
+		Marble Diagrams\PublishSample1.png = Marble Diagrams\PublishSample1.png
+		Marble Diagrams\PublishSample2.png = Marble Diagrams\PublishSample2.png
+		Marble Diagrams\Range.png = Marble Diagrams\Range.png
+		Marble Diagrams\RefCount.png = Marble Diagrams\RefCount.png
+		Marble Diagrams\ReplaySample1.png = Marble Diagrams\ReplaySample1.png
+		Marble Diagrams\ReplaySample2.png = Marble Diagrams\ReplaySample2.png
+		Marble Diagrams\Return.png = Marble Diagrams\Return.png
+		Marble Diagrams\Sample.png = Marble Diagrams\Sample.png
+		Marble Diagrams\Scan.png = Marble Diagrams\Scan.png
+		Marble Diagrams\Single.png = Marble Diagrams\Single.png
+		Marble Diagrams\Skip.png = Marble Diagrams\Skip.png
+		Marble Diagrams\SkipAndTake.png = Marble Diagrams\SkipAndTake.png
+		Marble Diagrams\SkipLast.png = Marble Diagrams\SkipLast.png
+		Marble Diagrams\SkipUntil.png = Marble Diagrams\SkipUntil.png
+		Marble Diagrams\SkipWhile.png = Marble Diagrams\SkipWhile.png
+		Marble Diagrams\StartWith.png = Marble Diagrams\StartWith.png
+		Marble Diagrams\Switch.png = Marble Diagrams\Switch.png
+		Marble Diagrams\Take.png = Marble Diagrams\Take.png
+		Marble Diagrams\TakeLast.png = Marble Diagrams\TakeLast.png
+		Marble Diagrams\TakeUntil.png = Marble Diagrams\TakeUntil.png
+		Marble Diagrams\TakeWhile.png = Marble Diagrams\TakeWhile.png
+		Marble Diagrams\Throttle.png = Marble Diagrams\Throttle.png
+		Marble Diagrams\Throw.png = Marble Diagrams\Throw.png
+		Marble Diagrams\Timeout.png = Marble Diagrams\Timeout.png
+		Marble Diagrams\Timer.png = Marble Diagrams\Timer.png
+		Marble Diagrams\TimerWithDelay.png = Marble Diagrams\TimerWithDelay.png
+		Marble Diagrams\ToObservable.png = Marble Diagrams\ToObservable.png
+		Marble Diagrams\Where.png = Marble Diagrams\Where.png
+		Marble Diagrams\Zip.png = Marble Diagrams\Zip.png
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|ARM = Debug|ARM
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|ARM = Release|ARM
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|ARM.ActiveCfg = Debug|ARM
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|ARM.Build.0 = Debug|ARM
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|ARM.Deploy.0 = Debug|ARM
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|x64.ActiveCfg = Debug|x64
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|x64.Build.0 = Debug|x64
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|x64.Deploy.0 = Debug|x64
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|x86.ActiveCfg = Debug|x86
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|x86.Build.0 = Debug|x86
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Debug|x86.Deploy.0 = Debug|x86
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|Any CPU.ActiveCfg = Release|x86
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|ARM.ActiveCfg = Release|ARM
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|ARM.Build.0 = Release|ARM
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|ARM.Deploy.0 = Release|ARM
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|x64.ActiveCfg = Release|x64
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|x64.Build.0 = Release|x64
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|x64.Deploy.0 = Release|x64
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|x86.ActiveCfg = Release|x86
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|x86.Build.0 = Release|x86
+		{05C73AF2-B642-44C8-9693-898A68E54975}.Release|x86.Deploy.0 = Release|x86
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|ARM.Build.0 = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|x64.Build.0 = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Debug|x86.Build.0 = Debug|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|Any CPU.Build.0 = Release|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|ARM.ActiveCfg = Release|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|ARM.Build.0 = Release|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|x64.ActiveCfg = Release|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|x64.Build.0 = Release|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|x86.ActiveCfg = Release|Any CPU
+		{05DDFC4F-C9DB-4F99-8F99-26EE9B847543}.Release|x86.Build.0 = Release|Any CPU
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|ARM.ActiveCfg = Debug|ARM
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|ARM.Build.0 = Debug|ARM
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|ARM.Deploy.0 = Debug|ARM
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|x64.ActiveCfg = Debug|x64
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|x64.Build.0 = Debug|x64
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|x64.Deploy.0 = Debug|x64
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|x86.ActiveCfg = Debug|x86
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|x86.Build.0 = Debug|x86
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Debug|x86.Deploy.0 = Debug|x86
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|Any CPU.ActiveCfg = Release|x86
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|ARM.ActiveCfg = Release|ARM
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|ARM.Build.0 = Release|ARM
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|ARM.Deploy.0 = Release|ARM
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|x64.ActiveCfg = Release|x64
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|x64.Build.0 = Release|x64
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|x64.Deploy.0 = Release|x64
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|x86.ActiveCfg = Release|x86
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|x86.Build.0 = Release|x86
+		{715011F4-B0E8-4E1E-A44A-93E367DA730D}.Release|x86.Deploy.0 = Release|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|ARM.ActiveCfg = Debug|ARM
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|ARM.Build.0 = Debug|ARM
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|ARM.Deploy.0 = Debug|ARM
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|x64.ActiveCfg = Debug|x64
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|x64.Build.0 = Debug|x64
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|x64.Deploy.0 = Debug|x64
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|x86.ActiveCfg = Debug|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|x86.Build.0 = Debug|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Debug|x86.Deploy.0 = Debug|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|Any CPU.ActiveCfg = Release|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|ARM.ActiveCfg = Release|ARM
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|ARM.Build.0 = Release|ARM
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|ARM.Deploy.0 = Release|ARM
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|x64.ActiveCfg = Release|x64
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|x64.Build.0 = Release|x64
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|x64.Deploy.0 = Release|x64
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|x86.ActiveCfg = Release|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|x86.Build.0 = Release|x86
+		{F4943245-9C83-42E9-AEDB-AF0BC74CD09D}.Release|x86.Deploy.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1066D06C-2D5F-45EB-AB16-F149A198E490} = {143E9BA4-ECB4-4C80-BBE7-36BB0531AFFB}
+	EndGlobalSection
+EndGlobal
