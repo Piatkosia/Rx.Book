@@ -348,23 +348,24 @@ this.searchButton.Click += async (s, e) =>
 };
 ```
 
-What will happen if you run the app?
+Co się stanie kiedy uruchomimy aplikację?
 
-Probably one of the first things you will notice after playing with it a little bit is that thanks to the simulated random latency of queries you will receive suggestions out of order. You might try to type something like "where", but the logic sends a request for new suggestions after every single new character in the query, and it's very much possible that you receive suggestions for the fragment "wh" by the time you already typed "whe", in a worse case even overriding the suggestions for "whe" because of the latency difference makes it possible that the response from the web service call returns the suggestions for "whe" sooner than the suggestions for "wh".
+Najprawdopodobniej jedną z pierwszych rzeczy, które zauważysz po zabawie, jest to, że dzięki symulowanej losowej latencji otrzymasz sugestie niezgodne z zamówieniem. Możesz napisać coś jak naprzykład "where", ale logika wysyła żądanie po każdej literce w zapytaniu, i jest bardzo prawdopodobne, że sugestie będą tylko dla "wh" podczas gdy wpisałeś już "whe", w najgorszym przypadku nawet pominięcie sugestii "whe" ze względu na różnicę opóźnień sprawia, że odpowiedź z wezwania serwisowego zwraca sugestie "whe" wcześniej niż sugestie "wh".
 
-Another problem that you might notice is not necessarily a logical problem, but more like a bad user experience. Requesting suggestions for every single new character the user types is a waste of resources (CPU, battery, network - not to mention money, if the user is using a metered connection, like 4G).
+Inny problem, który można zauważyć, nie jest koniecznie logicznym problemem, ale bardziej jak kiepskim doświadczeniem użytkownika. Prośba o sugestie dla każdej nowej postaci wpisanej przez użytkownika to strata zasobów (procesor, bateria, sieć - nie mówiąc o pieniądzach, jeżeli użytkownik korzysta z łącza mobilnego i płaci od megabajta).
 
-Seeing these problems, let's try to collect the requirements for this app to work better.
+Widząc te problemy, spróbujmy zebrać wymagania, aby ta aplikacja działała lepiej.
 
-The application should be resilient to server side errors and timeouts. It should automatically retry (let's say 3 times) every request if they fail for any reason.
+Aplikacja powinna być odporna na błędy po stronie serwera i timeouty. Powinien automatycznie ponowić (powiedzmy 3 razy) każde żądanie, jeśli z jakiegoś powodu coś pójdzie nie tak.
 
-It would be nice to have some throttling mechanism, so the app wouldn't issue a request for suggestions for every new character, but it would wait until the user calms down and is not typing.
+Fajnie by było też mieć mechanizm, który wysyła żądanie dopiero wtedy, jak użytkownik przez chwilę nic nie robi, co by nie słać co znak.
 
-A seemingly small but useful optimisation to check if two consecutive queries are the same, in which case the app shouldn't do anything. This can happen because of the throttling, if the user types something, waits, types something new but immediately deletes it returning to the previous state of the query, the app would basically see 2 events with the same request. Also if the user just types something in the search box and then starts spamming the search button, the app shouldn't send the exact same query multiple times.
+Z pozoru mała, ale użyteczna optymalizacja, aby sprawdzić, czy dwa kolejne zapytania są takie same, w tym przypadku aplikacja nie powinna nic robić. Może się to zdarzyć, jeśli użytkownik coś napisze, czeka,znowu coś pisze i usuwa wracając do poprzedniego stanu zapytania, aplikacja w zasadzie widziała 2 zdarzenia z tym samym żądaniem. Ponadto, jeśli użytkownik wpisze coś w polu wyszukiwania, a następnie rozpocznie spamowanie przycisku wyszukiwania, aplikacja nie będzie wielokrotnie wysyłać tego samego zapytania.
 
-Last but not least there is a race condition problem, meaning the app have to make sure that the user only gets suggestions or results for what they typed last, and no phantom responses with high latency should show up unexpectedly.
+Last but not least, mamy problem wyścigu (race condition), czyli musimy mieć pewność, że użytkownik widzi sugestię tylko do tego, co wpisał na końcu,  żadne niespodziewane odpowiedzi co przyszły z dużym opóźnieniem nie powinny się pojawiać. 
 
-Let's take a look at the individual problems then to a solution to combine them.
+Rozważmy każdy z problemów z osobna, rozwiążmy je a potem połączmy rozwiązania.
+
 
 ### Timeout
 
