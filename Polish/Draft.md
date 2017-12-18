@@ -369,13 +369,14 @@ Rozważmy każdy z problemów z osobna, rozwiążmy je a potem połączmy rozwi�
 
 ### Timeout
 
-Thanks to the `await` keyword introduced in C# 5.0, you can write short and easy to read asynchronous code. The *raw* service call is just one line of code...
+Dzięki słowu kluczowemu `await` wprowadzonemu w C# 5.0, możemy pisać krótki i czytelny kod asynchroniczny. *Surowe* wywołanie serwisu zajmuje tylko jedną linijkę...
+
 
 ```csharp
 var suggestions = await this.searchService.GetSuggestionsForQuery(query);
 ```
 
-... but as soon as you want something a little bit more difficult, you have to leave the comfort of this simplicity and start writing code. A possible implementation for the timeout logic can be seen below.
+... ale tak długo jak chcesz zrobić coś trochę trudniejszego, musisz porzucić wygodę tego uproszczenia i zacząć pisać kod. Możliwa implementacja logiki timeouta została pokazana poniżej. 
 
 ```csharp
 private readonly TimeSpan timeoutInterval = TimeSpan.FromMilliseconds(500);
@@ -391,7 +392,7 @@ public async Task<IEnumerable<string>> ServiceCall_Timeout(string query)
 }
 ```
 
-You start the service call and a `Delay` in parallel and wait for one of them to return. Based on which one returned first you can decide if the operation finished successfully (or failed for some other reason), or timed out.
+Uruhamiasz wywołanie serwisu i `Delay` równolegle i czekasz aż jeden z nich się skończy. W zależności od tego który to będzie operację uznajesz za udaną (lub nieudaną z jakiegoś powodu) albo za timeout. 
 
 ### Retry
 
