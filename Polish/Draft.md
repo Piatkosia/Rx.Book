@@ -420,17 +420,17 @@ Ale jeśli wywołanie zawiedzie, blok `try`-`catch` to łyknie i pozwoli pętli 
 
 ### Throttle
 
-Throttling, distinct check and race condition handling are more complicated tasks to implement. By their nature they will filter out some of the requests, not returning anything for them. There won't be a 1:1 connection between the requests and responses, there will be more requests than responses.
+Dławienie, sprawdzanie unikalności i obsługa wyścigów, to bardziej skomplikowane do implementacji zadania. Ze swojej natury odfiltrowywują niektóre żądania i nie zwracają z nich nic. Nie może być połączenia 1:1 pomiędzy żądaniem a odpowiedzą i będzie więcej żądań niż odpowiedzi. 
+Dławienie pozwala na zgłaszanie sugestii tak często, jak chcesz, ale wewnętrznie wysyła żądanie (i generuje jakąś odpowiedź) po tym, jak użytkownik nie dotknął klawiatury przez pół sekundy.
 
-Throttling will let you request suggestions as frequently as you want, but internally it will only issue a request (and produce any kind response) after the user haven't touched the keyboard for half second.
 
-Yet again, for the distinction check, you can request suggestions as many times as you want, but internally it will only send the request through if it's different than the previous request.
+Jeszcze raz, aby sprawdzić unikalność, możesz wysyłać tyle żądań ile chcesz, ale wewnętrznie tylko  będzie słało zapytania tylko wtedy, gdy będą się różnić od poprzedniego.
 
-And the race condition check will throw away some of the old service calls in case there is a newer one requested.
+I sprawdzanie wyścigu odrzuci niektóre stare wywołania serwisowe, jeśli wysłano nowsze zapytanie.
 
-This leads to a pattern where the service call wrapping method will no longer directly return anything, it will turn into a `void` method, and instead you will be able to get the most recent results through a CallBack event.
+To nas prowadzi do wzorca gdzie wywołanie serwisu nie będzie już bezpośrednio zwracać niczego, zmieni się w metodę z `void`em, a zamiast tego będzie można uzyskać najnowsze wyniki za pośrednictwem zdarzenia CallBack.
 
-Throttling works in a simple way: You save the current `DateTime` into an instance level field, wait some time (half second) and check if the time difference between the saved and the new current `DateTime` is equals or more than the specified throttling interval. If it is, it means that no one called this method while it was waiting (otherwise the difference between the saved and current `DateTime` would be less than the specified throttle interval), so it can advance forward and do the service call, and send the result of the call through the CallBack event.
+Dławienie działa w prosty sposób: zapisujesz aktualny `DateTime` do  pola w instancji, czekasz jakiś czas (pół sekundy) i sprawdzasz różnicę między zapisanym a aktualnym `DateTime`  czy jest równa lub większa ustalonemu interwałowi "dławienia (throttling)". Jeśli jest, to znaczy że nic nie wywołało metody od kiedy czekamy (w przeciwnym wypadku różnica między zapisanym a aktualnym `DateTime` byłaby mniejsza niż ustalony interwał dławienia ), więc możemy przejść do wywołania serwisu i wysłania wyniku przez CallBack zdarzenia. 
 
 ```csharp
 private readonly TimeSpan throttleInterval = TimeSpan.FromMilliseconds(500);
