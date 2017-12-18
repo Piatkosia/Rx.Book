@@ -196,7 +196,7 @@ LINQ to w rzeczywistości więcej niż elementem języka, mamy rzeczywiście na 
 | LINQ (to Objects) | Rx |
 | ---: | :--- |
 | Działa zarówno z kolekcjami, jak i z wszystkimi typami, które dają się wyliczyć, czy to dzięki wbudowanemu iteratorowi, czy przez implementację wzorca projektowego iterator reprezentowanego przez interfejsy takie jak `IEnumerable<T>` czy `IEnumerator<T>` | Obsługuje typy obserwowalne, zbudowane według wzorca projektowego obserwator, reprezentowanymi przez interfejsy `IObservable<T>` i `IObserver<T>`|
-| Reprezentuje technikę  *wyciągania(pull)*  wewnętrznie wyciągając kolejne elementy z kolekcji przy użyciu metody `MoveNext()`. Kiedy prosisz system o kolejny element| Reprezentuje technikę *pchania (push)* wewnętrznie obiekt `IObservable` trzyma referencję do zasubskrybowanych `IObserver` i wywołuje ich metodę callbackową `OnNext()` gdy pójdzie jakieś zdarzenie. System informuje ciebie czy jest dostępny nowy element.
+| Reprezentuje technikę  *wyciągania(pull)*  |wewnętrznie wyciągając kolejne elementy z kolekcji przy użyciu metody `MoveNext()` kiedy prosisz system o kolejny element.| Reprezentuje technikę *pchania (push)*| wewnętrznie obiekt `IObservable` trzyma referencję do zasubskrybowanych `IObserver` i wywołuje ich metodę callbackową `OnNext()` gdy pójdzie jakieś zdarzenie. System informuje ciebie czy jest dostępny nowy element.
 | Przyjmuje kolekcję i pozwala ci ją zmieniać, transformować, filtrować, porządkować, grupować i wiele więcej, zwracając zmodyfikowaną kolekcję | Przyjmuje strumień źródeł zdarzeń i przetwarza, filtruje, porządkuje, grupuje i nie tylko, zwraca zmodyfikowany strumień zdarzeń |
 | Jest kolekcją metod rozszerzających dla interfejsu `IEnumerable<T>`  | Jest kolekcją metod rozszerzających dla interfejsu  `IObservable<T>` |
 
@@ -322,15 +322,15 @@ public async Task<IEnumerable<string>> GetSuggestionsForQuery(string query)
 
 ## Podejście tradycyjne
 
-Now that you have the foundation of the app, let's take a look at the high level description of the problem you are facing.
+Teraz, gdy masz już podstawę aplikacji, przyjrzyjmy się wysokopoziomowemu opisowi problemu, z którym masz do czynienia.
 
-The goal is to build a search page where as the users are typing their query, they get suggestions for possible completions, and when they finally hit the Search button, show them some search results.
+Celem jest zbudowanie strony wyszukiwania, w której użytkownicy wpisują swoje zapytanie, uzyskują sugestie dotyczące możliwych uzupełnień, a kiedy wreszcie wcisną przycisk wyszukiwania, pokażą im jakieś wyniki wyszukiwania.
 
-An interesting side fact: when you are using a real search engine (like Bing), the suggestions you are getting are just a result of some smart matching of words, but doesn't necessarily represent an actual result. It's very much possible that the search engine will help you phrase the perfect query by giving you some amazing suggestions, and then it won't find anything related to what you wanted. So long story short, suggestions and results are different things, but suggestions in real life are built based on statistical data from other users' queries and indexed websites and some intelligence to just suggest matching words to your existing query, so they can still be absolutely useful.
+Ciekawostka: gdy używasz prawdziwej wyszukiwarki (takiej jak Bing), otrzymywane sugestie są wynikiem pewnego inteligentnego dopasowywania słów, ale niekoniecznie odzwierciedlają rzeczywisty wynik. Jest bardzo możliwe, że wyszukiwarka pomoże Ci sformułować idealne zapytanie, dając ci niesamowite sugestie, a następnie nie znajdzie niczego, co jest związane z tym, czego szukasz. Krótko mówiąc, sugestie i wyniki to różne rzeczy, ale sugestie w prawdziwym życiu są budowane na podstawie danych statystycznych z zapytań innych użytkowników i zindeksowanych stron internetowych oraz sztucznej inteligencji, aby zasugerować pasujące słowa do istniejącego zapytania, aby nadal mogły być absolutnie przydatne.
 
-Let's start building the app logic with a naive implementation and find the potential problems in it.
+Spróbujmy zbudować logikę aplikacji z implementacją naiwną i sprawdźmy jakie to niesie potencjalne problemy.
 
-Put the following code block in the constructor of the main page and try it in action.
+Umieść poniższy blok kodu w konstruktorze głównej strony i sprawdź to w działaniu.
 
 ```csharp
 this.searchBox.TextChanged += async (s, e) => 
