@@ -1,7 +1,7 @@
 # Spis treści
 
 + **Wstęp**
-  + [Problem - asynchroniczność](#problem---asynchronicznosc)
+  + [Problem - asynchroniczność](#problem---asynchroniczność)
   + [Czym jest Observable?](#czym-jest-observable)
   + [Co to jest LINQ?](#co-to-jest-linq)
   + [LINQ vs Rx](#linq-vs-rx)
@@ -30,9 +30,9 @@ W skrócie: Rx = Observables + LINQ + Schedulers
 
 (nie wiem czy jest sens te słowa tłumaczyć, ale byłoby to coś )
 
-## Czym jest Observable (Obserwowany)?
+## Czym jest Observable?
 
-Aby zrozumieć pojęcie Observables, najpierw trzeba zrozumieć podstawową różnicę między programowaniem synchronicznym, a asynchronicznym.
+Aby zrozumieć pojęcie Observables(Obserwowany/Obserwowani), najpierw trzeba zrozumieć podstawową różnicę między programowaniem synchronicznym, a asynchronicznym.
 
 W zależności od tego jaki rodzaj aplikacji piszesz, jest sporo szansy, że większość logiki biznesowej to kod synchroniczny, co oznacza, że wszystkie linie kodu jaki napisałeś będą wykonywane sekwencyjnie, linijka po linijce. Komputer bierze linię, wykonuje ją, czeka aż skończy i dopiero potem bierze kolejną i wykonuje. Typowa aplikacja konsolowa zawiera tylko synchroniczny kod, jak ma dostać dane wejściowe od użytkownika, to czeka i nie robi dosłownie nic innego.
 
