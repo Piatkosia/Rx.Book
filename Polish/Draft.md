@@ -396,7 +396,7 @@ Uruhamiasz wywołanie serwisu i `Delay` równolegle i czekasz aż jeden z nich s
 
 ### Retry
 
-Retry logic usually involves some kind of loop, trying an operation over and over again a number of times. Again, the `await` keyword saves quite a lot of code as you can use `await` within a `for` or `while` loop, but you have to write some code to make it happen. Here is a possible implementation.
+Logika ponawiania (retry) zazwyczaj jest rozwiązywana jakąś pętlą, próbą wykonywania operacji ileś tam razy z rzędu. Znowu, słówko kluczowe  `await` oszczędza masę kodu,  jako że możesz użyć `await` wewnątrz pętli  `for` lub `while` loop, ale musisz co nieco napisać, by tak się stało. Poniżej możliwa implementacja.
 
 ```csharp
 private readonly int numberOfRetries = 3;
@@ -405,18 +405,18 @@ public async Task<IEnumerable<string>> ServiceCall_Retry(string query)
     for (var tries = 0; tries < this.numberOfRetries; tries++)
     {
         try { return await this.searchService.GetSuggestionsForQuery(query); }
-        catch { /* deal with the exception */ }
+        catch { /* obsługa wyjątku */ }
     }
 
-    throw new Exception("Out of retries");
+    throw new Exception("Więcej nie będę powtarzać");
 }
 ```
 
-The code basically includes a `for` loop that loops 3 times and if it "successfully" manages to do that, at the end of the method an exception waits to be thrown. So loop - loop - loop - throw.
+Powyższy kod zawiera po prostu pętlę `for` kręcącą się 3 razy dopóki się nie uda, a potem rzuca wyjątek. Więc pętla-pętla-pętla-wyjątek.
 
-Inside the `for` loop you can find the actual service call in a `try`-`catch` block. <br/>
-If the service call returns successfully, the method returns and there won't be any more looping or exception throwing at the end. <br/>
-But if the service call fails, the `try`-`catch` block "swallows" it and lets the `for` loop to go to the next iteration and retry it, or exit the `for` loop and throw the exception at the end of the method.
+Wewnątrz pętli `for` można znaleźć rzeczywiste wywołanie serwisu w bloku `try`-`catch`. <br/>
+Jeżeli wywołanie funkcji serwisowej zakończy się sukcesem, metoda się skończy i nie będzie kontynuować pętli, ani rzucać wyjątku na koniec.<br/>
+Ale jeśli wywołanie zawiedzie, blok `try`-`catch` to łyknie i pozwoli pętli `for` przejść do następnej iteracji i powtórzyć je, albo zakończyć pętlę `for` i rzucić wyjątek na końcu metody.
 
 ### Throttle
 
