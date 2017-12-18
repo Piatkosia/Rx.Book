@@ -1,9 +1,9 @@
-# Table of contents
+# Spis treści
 
-+ **Introduction**
-  + [The problem - asynchrony](#the-problem---asynchrony)
-  + [What is an Observable?](#what-is-an-observable)
-  + [What is LINQ?](#what-is-linq)
++ **Wstęp**
+  + [Problem - asynchroniczność](#the-problem---asynchrony)
+  + [Czym jest Observable?](#what-is-an-observable)
+  + [Co to jest LINQ?](#what-is-linq)
   + [LINQ vs Rx](#linq-vs-rx)
 + **Hello Rx World**
   + [Preparations](#preparations)
@@ -18,39 +18,44 @@
   + [Rx + Async](#rx--async)
   + [Summary](#summary-1)
 
-# Introduction
+# Wstęp
 
-## The problem - asynchrony
+## Problem - asynchroniczność
 
-If you are developing modern applications (whether it's a mobile, desktop or server side application), at some point you will reach the limitations of synchronously running code and find yourself facing the difficulties of multi-threaded and/or event-driven development. If you want to build a performant and responsive application and handle I/O operations, web service calls or CPU intensive tasks asynchronously, your code will become much more difficult to handle. Unusual methods must be used for coordination, exception handling and you might have to deal with cancellability of long running operations and the synchronization of parallel running ones.
+Kiedy piszesz nowoczesne aplikacje(czy to mobilne, desktopowe, czy serwerowe), w pewnym momencie odczujesz ograniczenia płynące z kodu wykonywanego synchronicznie i będziesz musiał stawić czoła trudnościom związanym z aplikacjami wielowątkowymi albo/i programowaniem zorientowanym na zdarzenia. Jeśli chcesz zbudować wydajną i responsywną aplikację jeżdżącą po I/O, wołającą funkcje z webservice'ów, albo wykonywać asynchronicznie funkcje obciążające intensywnie procesor, twój kod będzie trudniejszy do ogarnięcia. Nietypowe metody muszą być używane do koordynacji, przechwytywania wyjątków i musisz mieć jak anulować długotrwałe operacje i zsynchronizować zrównoleglone procesy.
 
-Reactive Extensions (hereinafter referred to as Rx) is a class library that allows you to build asynchronous and/or event-driven applications by representing the asynchronous data as "Observable" streams that you can use LINQ operations on and the execution, handling of race conditions, synchronization, marshalling of threads and more are handled by so called "Schedulers".
+Reactive Extensions (tudzież Rx) to biblioteka klas pozwalająca na budowanie asynchronicznych lub/i zorientowanych na zdarzenia aplikacji poprzez reprezentowanie danych asynchronicznych jako strumieni "Observable", dzięki którym możesz użyć operacji LINQ na wykonaniu, przechwytywaniu wyścigów (race conditions), synchronizacji, zarządzaniu wątkami i wielu innych, dzięki tak zwanym harmonogramom ("Schedulers")
 
-In short: Rx = Observables + LINQ + Schedulers
+W skrócie: Rx = Observables + LINQ + Schedulers
 
-## What is an Observable?
+(nie wiem czy jest sens te słowa tłumaczyć, ale byłoby to coś )
 
-To understand the concept of Observables, you first have to understand the basic difference between synchronous and asynchronous programming.
+## Czym jest Observable (Obserwowany)?
 
-Depending on what kind of application you are building, there is a good chance that most of the business logic is synchronous code which means that all the lines of code you write will be executed sequentially, one after the other. The computer takes a line, executes it, waits for it to finish and only after that will it go for the next line of code to execute it. A typical console application only contains synchronous code, to the level that if it has to wait for input from the user, it will just wait there doing exactly nothing.
+Aby zrozumieć pojęcie Observables, najpierw trzeba zrozumieć podstawową różnicę między programowaniem synchronicznym, a asynchronicznym.
 
-In contrast with that, asynchrony means you want to do things in response to events you don't necessarily know when they happen.
+W zależności od tego jaki rodzaj aplikacji piszesz, jest sporo szansy, że większość logiki biznesowej to kod synchroniczny, co oznacza, że wszystkie linie kodu jaki napisałeś będą wykonywane sekwencyjnie, linijka po linijce. Komputer bierze linię, wykonuje ją, czeka aż skończy i dopiero potem bierze kolejną i wykonuje. Typowa aplikacja konsolowa zawiera tylko synchroniczny kod, jak ma dostać dane wejściowe od użytkownika, to czeka i nie robi dosłownie nic innego.
 
-A good example for this is the `Click` event of a button on the UI, but also the response from a web service call. In the case of the latter it's very much possible that in terms of the execution order of the commands you know exactly that you only want to do things after you have the response, but you have to consider the chance that this service call could take seconds to return, and if it would be written in a synchronous way, the execution on the caller thread would be blocked and it couldn't do anything until the service call returns. And this can lead to very unpleasant experience for the users as they will just see the UI becoming unresponsive or "frozen". To make sure it doesn't happen you will have to do asynchronous call which means that the logic will be executed (or waited in the case of I/O operations) in the background without blocking the calling thread and you will get the result through some kind of callback mechanism. If you have been around in the developer industry for a while, you might remember the dark days of callback chains, but fortunately in C# 5.0 / .NET 4.5 (in 2012) Microsoft introduced the `async` and `await` keywords that makes it possible to write asynchronous code that looks just like a regular synchronous code. Just think about the difficulties of implementing simple language constructs like a conditional operation, a loop or a try-catch block with the traditional form (callbacks) of asynchronous programming. With these new keywords you can naturally use all of these while still having a performant, responsive and scalable asynchronous code. But even though it makes life significantly easier in many scenarios, the moment you want to do something a little more complicated, like a retry, timeout or adding paging functionality to a web service call, you have to start writing complex logic because hiding the difficulties of dealing with callbacks won't save you from implementing these custom operations.
+W przeciwieństwie do tego, asynchroniczność oznacza, że chcesz coś zrobić w odpowiedzi na jakieś zdarzenie i niekoniecznie musisz wiedzieć, kiedy ono nastąpi. 
 
-Events (in C#) have a serious problem though, they are not objects, you can't pass them around as method parameters, and tracking the subscribers of an event is also not trivial. This is where the Observer design patter comes in handy, because with it you can implement event handling for yourself instead of using a language feature, so you have full control over the event source, the subscribers and the method of the notification.
+Weźmy przykład zdarzenia  `Click` , następującego po naciśnięciu guzika w programie, jak również odpowiedzi z webservice'u. W tym drugim przypadku jest bardzo, ale to bardzo prawdopodobne, że jeśli chodzi o kolejność wykonywania komend, wiesz dokładnie, że chcesz tylko robić rzeczy po otrzymaniu odpowiedzi, acz to może zająć trochę czasu i gdyby to wywołać synchronicznie, zablokowało by się wątek, dopóki nie wrócimy z funkcji i nic byśmy nie zrobili. Znamy to doświadczenie, gdy aplikacja się zwiesza i nie odpowiada. Aby upewnić się że nic podobnego się nie zdarzy, wywołujemy taki kod asynchronicznie, co oznacza że logika wykonuje się (lub czeka na I/O) w tle bez blokowania wątku wywołującego i dostajemy odpowiedź przez coś w stylu mechanizmu callback'u (czy tam wywołania zwrotego). Jeśli byłeś w branży developerskiej przez chwilę, z pewnością pamiętasz mroczne dni łańcuchów callbacków, ale na szczęście w  in C# 5.0 / .NET 4.5 (w 2012) Microsoft wprowadził słowa kluczowe  `async` i `await` które umożliwiają pisanie kodu asynchronicznego wyglądającego jak zwykły synchroniczny kod. Po prostu pomyśl o trudnościach w implementacji prostych konstrukcji językowych jak operatory warunkowe, pętle, albo bloki try-catch w tradycyjnej formie (callbacki) w programowaniu asynchronicznym. Z tymi nowymi słowami kluczowymi możesz naturalnie używać ich wszystkich, zachowując wydajny, responsywny i skalowalny kod asynchroniczny. 
+Ale nawet jeśli znacznie ułatwia to życie w wielu scenariuszach, w momencie, gdy chcesz zrobić coś bardziej skomplikowanego, np. ponowienie (retry), przekroczenie limitu czasu (timeout) lub dodanie funkcji stronicowania do wywołania webservice'u, musisz zacząć pisać złożoną logikę, ponieważ ukrywanie trudności radzenia sobie z callbackami nie uchroni Cię przed wdrożeniem tych niestandardowych operacji.
 
-The Observer design pattern consists of two simple interfaces.
+Zdarzenia [eventy] (w C#)mają poważny problem, bo nie są obiektami, nie możesz przekazać ich jako parametrów metod, a śledzenie subskrybentów nie jest takie proste. I tu przychodzi z pomocą wzorzec Obserwator, ponieważ z nim możesz zaimplementować obsługę zdarzeń  samodzielnie, zamiast używać to, co oferuje język, także możesz mieć pełną kontrolę nad źródłem zdarzenia, subskrybentami i metodami powiadamiania.
 
-One of them is the `IObservable<T>` which represents an "observable" data source. This interface only has a `Subscribe()` method which kind of translates to the `+=` operator of the "event world".
+Wzorzec projektowy Obserwator składa się z dwóch prostych interfejsów. 
 
-The other one is the `IObserver<T>` which represents an "observer" object that you can pass to the `IObservable<T>`'s `Subscribe()` method. In the original design pattern this interface has only a `Notify()` method that gets called by the event source when an event occurs.
+Jednym z nich jest  `IObservable<T>`  który reprezentuje obserwowalne (observable) źródło danych. Ten interfejs ma tylko metodę  `Subscribe()`  którą możemy przetłumaczyć na  `+=` ze "świata zdarzeń/eventów".
 
-In the case of Rx, the implementation is slightly different. The `IObserver<T>` interface defines three methods: `OnNext()`, `OnError()` and `OnCompleted()`. `OnNext()` gets called for each new event from the event source, `OnError()` if something bad happened and `OnCompleted()` if the source wants to signal that it will not produce any more events and the subscription can be disposed.
+Kolejnym jest `IObserver<T>` reprezentujący obserwatora, obiekt, który może zostać przekazany do metody `Subscribe()` obiektu `IObservable<T>`. W oryginalnym wzorcu była tylko metoda `Notify()` która zostanie wywołana przez źródło zdarzenia po wystąpieniu zdarzenia.
 
-Rx is built on top of these two interfaces, and using this simple design pattern it makes dealing with asynchronous programming extremely easy (and I would even go as far as saying fun). To understand how, let's talk a little bit about LINQ.
+W przypadku Rx, implementacja jest nieco inna.
 
-## What is LINQ?
+Interfejs `IObserver<T>` definiuje trzy metody: `OnNext()`, `OnError()` i `OnCompleted()`. `OnNext()` jest wywoływany dla każdego nowego zdarzenia ze źródła zdarzeń,  `OnError()` jak coś się popsuło `OnCompleted()` jeżeli żródło chce zasygnalizować, że nie wypuści więcej zdarzeń i można wywalić subskrypcję. 
+
+Rx jest zbudowany na tych dwóch interfejsach i używa prostego wzorca projektowego, aby uczynić programowanie asynchronicznie ekstremalnie łatwym (żeby nie posunąć się do zabawy). Aby zrozumieć dlaczego, porozmawiajmy troszeczkę o LINQ. 
+
+## Co to jest LINQ?
 
 LINQ (Language Integrated Query) is making devs' life easier since .NET 3.5 (2007) when it comes to dealing with processing collections. This technology, or more like the language features that have been introduced with it, brought the first seeds of functional programming to C#. I won't go into details about what functional programming means because it's way out of the scope of this book, but I would like to quote Luca Bolognese's analogy from a PDC presentation from 2008.
 

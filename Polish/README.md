@@ -1,11 +1,16 @@
-# High level asynchronous programming with Reactive Extensions
+# Wysokopoziomowe programowanie asynchroniczne z Reactive Extensions
 
-When I finished my university in 2013, I wrote my thesis about Rx and also released it as a free ebook available for anyone interested in learning about it. That book was written in Hungarian, it was based on Rx 2.x version and it was aiming Windows 8 WinRT app developers. Since then some things have changed in the library (moving to NuGet, changed namespaces, etc), Windows 10 (UWP) got released and I had the chance to rethink some parts of the book and most importantly translate it to English.
+Kiedy kończyłem uniwersytet, w 2013, pisałem pracę dyplomową o Rx a także wydałem ją jako wolną i darmową książkę dostępną dla każdego zainteresowanego nauką o tym. Ta książka została napisana na Węgrzech (po węgiersku), bazowała na wersji 2.x i została przygotowana dla programistów aplikacji Windows 8 WinRT. Od tego czasu niektóre rzeczy się w bibliotece zmieniły (przeniesienie na NuGet, zmieniono namespace'y i tak dalej), wyszedł Windows 10 (UWP) u miałem szansę przemyśleć niektóre fragmenty książki i co najważniejsze, przetłumaczyć to na angielski.
 
-This book is not a hard core deep dive book, it's an introduction for beginners who want some easy to understand "Hello World" level examples to see the various operators working alone and combined.
+Ta książka nie jest po to, by się jakoś specjalnie zgłębiać w szczegóły, jest wprowadzeniem dla początkujących, którzy chcą prostych przykładów, na poziomie "Hello World'a" aby zobaczyć jak to wszystko działa razem i z osobna.
 
-I host this book on GitHub with the source code of the examples and any tools I've been using to put this book together, and I absolutely welcome any suggestions or requests to expand this book with, or potentially even do a series of blog posts or another more in-depth book to talk about more advanced scenarios.
+Hostuję książkę na GitHubie z kodem źródłowym do przykładów i wszelkimi narzędziami których będę używał aby złożyć wszystko co związane z tą książką do kupy, przyjmę wszelkie sugestie czy prośby o rozszerzenie książki, albo/i o ile to możliwe zrobienie serii postów na blogu albo inną książkę, na nieco wyższym poziomie gdzie poruszymy bardziej zaawansowane scenariusze. 
 
-I hope you are going to enjoy it.
+Mam nadzieję, że ci się spodoba.
 
-**[Let's jump into it!](Draft.md)**
+Od tłumaczki:
+Szukałam książki do Rx, nie było po ludzku, więc uznałam, że przetłumaczę tę. A że braci Węgrów lubię i uznałam że mi człowiek w mordę nie da, to tłumaczenie wrzucam dla tych, którym to się może przydać.
+W książce będę się posługiwać "męską" wersją języka, jako że autor jest panem.
+Jak coś sknocę, to... pull requesty są:)
+
+**[No to lecim!](Draft.md)**

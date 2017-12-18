@@ -1,32 +1,32 @@
-# The largest heading
+# To jest duży nagłówek
 
 ---
 
-## The second largest heading
+## Nieco mniejszy nagłówek
 
 ---
 
-###### The smallest heading
+###### Najmniejszy nagłówek
 
 ---
 
-**This is bold text**
+**To jest pogrubiony tekst**
 
 ---
 
-*This text is italicized*
+*Ten tekst jest pochylony*
 
 ---
 
-~~This was mistaken text~~
+~~Tu jest ściema~~
 
 ---
 
-**This text is _extremely_ important**
+**Ten tekst jest _ekstremalnie_ ważny**
 
 ---
 
-In the words of Abraham Lincoln:
+Cytując Abrahama Lincolna:
 > Pardon my French
 > 
 > Hello World
@@ -59,21 +59,21 @@ git commit
 
 ---
 
-1. Make my changes
-  1. Fix bug
-  2. Improve formatting
-    * Make the headings bigger
-2. Push my commits to GitHub
-3. Open a pull request
-  * Describe my changes
-  * Mention all the members of my team
-    * Ask for feedback
+1. Robię zmiany
+  1. Naprawiam błędy
+  2. Ulepszam formatowanie
+    * Upewniam się że nagłówki są większe
+2. Pcham commita na GitHub
+3. Otwieram pull requesta
+  * Opisuję swoje zmiany
+  * Wymieniam wszystkich członków teamu
+    * Pytam o feedback
 
 ---
 
-- [x] Finish my changes
-- [ ] Push my commits to GitHub
-- [ ] Open a pull request
+- [x] Kończę robić zmiany
+- [ ] Pcham commity na GitHub
+- [ ] Otwieram  pull request
 
 ---
 
