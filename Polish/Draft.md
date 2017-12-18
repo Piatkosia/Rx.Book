@@ -176,9 +176,9 @@ Pełna składnia wyrażenia lambda wygląda mniej więcej tak:
 Przed operatorem grubej strzałki (`=>`, czyt "takie że"), w nawiasie podajemy parametry, a po strzałce w klamerkach piszemy ciało metody </br>
 Powodem, dla którego nie podajemy informacji o typie parametru czy wartości zwracanej jest przekazywanie wyrażenia jako delegatu, tak więc kompilator ma te informacje. </br>
 Oczywiście jest pewien skrót.</br>
-Jeśli mamy tylko jeden parametr, możemy nie pisać nawiasów, ale jak nie ma żadnych parametrów, musimy te  puste nawiasy napisać</br>
+Jeśli mamy tylko jeden parametr, możemy nie pisać nawiasów, ale jak nie ma żadnych parametrów, musimy te  puste nawiasy napisać.</br>
 Jeżeli wyrażenie mieści się w jednej linijce, nie musimy ciała wyrażenia zamykać w klamerkach, ani używać jawnie słowa kluczowego `return`.</br>
-I oczywiście niezapominajmy o sytuacji, gdy mamy metodę, która pasuje do potrzebnej sygnatury, kiedy to możemy ją przekazać jako  `Method(x => F(x))`, wystarczy że napiszemy wtedy `Method(F)`.</br>
+I oczywiście nie zapominajmy o sytuacji, gdy mamy metodę, która pasuje do potrzebnej sygnatury, kiedy to możemy ją przekazać jako  `Method(x => F(x))`, wystarczy że napiszemy wtedy `Method(F)`.</br>
 Jako "fun fact"  tylko nadmienię, że zrównoleglenie takiego wyrażenia wymaga dodania jednego operatora na jego początku. 
 ```csharp
 return numbers
@@ -195,10 +195,10 @@ LINQ to w rzeczywistości więcej niż elementem języka, mamy rzeczywiście na 
 
 | LINQ (to Objects) | Rx |
 | ---: | :--- |
-| Can work with collections and it works on enumerable types, which means that it builds on the iterator design pattern which is represented by the `IEnumerable<T>` and the `IEnumerator<T>` interfaces | Works with observable types, which means it builds on the observer design pattern which is represented by the `IObservable<T>` and `IObserver<T>` interfaces |
-| Represents a *pull* technique, as internally it keeps pulling out elements from the collection using the `MoveNext()` method. You ask the system to get the next element | Represents a *push* technique, as internally the `IObservable` object keeps a reference to the subscribed `IObserver` and calls its `OnNext()` callback method when some event occurs. The system notifies you if there is a new element available
-| Takes a collection and allows you to transform, filter, order, group and do many more operations on it and returns the modified collection | Takes a source event stream and transforms, filters, orders, groups and does many more operations on it, and returns the modified event stream |
-| Is a collection of extension methods for the `IEnumerable<T>` interface | Is a collection of extension methods for the `IObservable<T>` interface |
+| Działa zarówno z kolekcjami, jak i z wszystkimi typami, które dają się wyliczyć, czy to dzięki wbudowanemu iteratorowi, czy przez implementację wzorca projektowego iterator reprezentowanego przez interfejsy takie jak `IEnumerable<T>` czy `IEnumerator<T>` | Obsługuje typy obserwowalne, zbudowane według wzorca projektowego obserwator, reprezentowanymi przez interfejsy `IObservable<T>` i `IObserver<T>`|
+| Reprezentuje technikę  *wyciągania(pull)*  wewnętrznie wyciągając kolejne elementy z kolekcji przy użyciu metody `MoveNext()`. Kiedy prosisz system o kolejny element| Reprezentuje technikę *pchania (push)* wewnętrznie obiekt `IObservable` trzyma referencję do zasubskrybowanych `IObserver` i wywołuje ich metodę callbackową `OnNext()` gdy pójdzie jakieś zdarzenie. System informuje ciebie czy jest dostępny nowy element.
+| Przyjmuje kolekcję i pozwala ci ją zmieniać, transformować, filtrować, porządkować, grupować i wiele więcej, zwracając zmodyfikowaną kolekcję | Przyjmuje strumień źródeł zdarzeń i przetwarza, filtruje, porządkuje, grupuje i nie tylko, zwraca zmodyfikowany strumień zdarzeń |
+| Jest kolekcją metod rozszerzających dla interfejsu `IEnumerable<T>`  | Jest kolekcją metod rozszerzających dla interfejsu  `IObservable<T>` |
 
 # Hello Rx World
 
