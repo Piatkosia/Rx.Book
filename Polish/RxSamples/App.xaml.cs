@@ -37,8 +37,8 @@ namespace RxSamples
 #endif
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // Do not repeat app initialization when the Window already has content,
-            // just ensure that the window is active
+            //  Nie powtarzaj inicjalizacji apki gdy okno ma już content
+            // po prostu upewnij się że okno jest aktywne
             if (rootFrame == null)
             {
                 // Create a Frame to act as the navigation context and navigate to the first page

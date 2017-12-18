@@ -1,9 +1,9 @@
 # Spis treści
 
 + **Wstęp**
-  + [Problem - asynchroniczność](#the-problem---asynchrony)
-  + [Czym jest Observable?](#what-is-an-observable)
-  + [Co to jest LINQ?](#what-is-linq)
+  + [Problem - asynchroniczność](#problem---asynchronicznosc)
+  + [Czym jest Observable?](#czym-jest-observable)
+  + [Co to jest LINQ?](#co-to-jest-linq)
   + [LINQ vs Rx](#linq-vs-rx)
 + **Hello Rx World**
   + [Preparations](#preparations)
@@ -57,16 +57,16 @@ Rx jest zbudowany na tych dwóch interfejsach i używa prostego wzorca projektow
 
 ## Co to jest LINQ?
 
-LINQ (Language Integrated Query) is making devs' life easier since .NET 3.5 (2007) when it comes to dealing with processing collections. This technology, or more like the language features that have been introduced with it, brought the first seeds of functional programming to C#. I won't go into details about what functional programming means because it's way out of the scope of this book, but I would like to quote Luca Bolognese's analogy from a PDC presentation from 2008.
+LINQ (Language Integrated Query) czyni życie devów łatwiejszych jeśli wziąć pod uwagę przetwarzanie kolekcji, począwszy od .NET 3.5 (2007) kiedy zaprezentowano tą technologię, albo raczej funkcjonalność języka, która stała się zalążkiem programowania funkcyjnego w c#. Nie będę wchodzić w szczegóły programowania funkcyjnego, ponieważ wychodzi to daleko poza zakres tej książki ale chciałbym przytoczyć analogię Luki Bolognese z prezentacji PDC z 2008 roku:
 
->It's like going to a bar and telling the guy behind the counter <br/>
-> \- I want a cappuccino <br/>
->or going to the bar and telling the same guy <br/>
-> \- Now you grind the coffee, then get the water, warm it, at the same time prepare the milk, and I want these two thing to go in parallel...
+>To jak pójść do kawiarni i powiedzieć facetowi za ladą<br/>
+> \- Chcę cappuccino <br/>
+>albo pójść do kawiarni i powiedzieć do tego samego faceta<br/>
+> \- Teraz miel kawę, weź wodę, ogrzej ją, jednocześnie przygotuj mleko i chcę, żeby te dwie rzeczy były zrobione na raz.
+Aby przedstawić nieco lepszy przykład, zastanów się, jak rozwiązać następujący problem: Podaj zakres liczb, weź z nich liczby parzyste i zsumuj kwadraty.
 
-To bring a bit better example, think about how you would solve the following problem: Given a range of numbers, get the even numbers and sum their squares.
+Pierwsze rozwiązanie na które wpadniesz, prawdopodobnie będzie wyglądało mniej więcej tak:
 
-The very first solution would probably look something like this:
 
 ```csharp
 List<int> numbers = new List<int>();
@@ -93,29 +93,29 @@ foreach (var number in numbers)
 return accumulator;
 ```
 
-What could you do to make this code look prettier? How could you compress it a little bit, make it less verbose? Let's start with the initialization of the list.
-
+Czy można zrobić to ładniej?
+What could you do to make this code look prettier? Może trochę to skompresujesz, by kod był mniej rozwlekły? Zacznijmy od inicjalizacji listy.
 ```csharp
 var numbers = new List<int> { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 ```
 
-Let's go through this piece of code from keyword to keyword.
+Przejdźmy przez ten kawałek kodu od słowa kluczowego do słowa kluczowego.
 
-It starts with a `var` keyword. When you declare (and also initialize in the same time) a variable, the compiler can infer the type of the variable based on the right side of the assignment operator. In this example if you would move the mouse cursor over the `var` keyword, it would show that the `numbers` variable has the type of `List<int>`. This is a handy little feature of the language that makes the code a bit more compact and readable, but you will see examples for situations where it has a deeper role to enable certain functionality.
+Zaczynamy od słówka kluczowego `var`. Kiedy deklarujemy (a także inicjalizujemy w tym samym czasie) zmienną, kompilator może odgadnąć typ zmiennej, bazując na to, co ma po prawej stronie znaku równości. W tym przykładzie, jeśli przesuniemy kursor nad  `var`m zobaczymy, że zmienna   `numbers` jest typu `List<int>`. Ta mała zmiana zmniejsza objętość kodu, przez co jest on bardziej czytelny, ale zobaczysz przykłady sytuacji  w których ma ona głębszą rolę, aby umożliwić określoną funkcjonalność.
 
-Let's move on and take a look at the initialization of the list. The line doesn't end with calling the parameterless constructor, but the items of the list are defined within curly braces. This is called the *collection initializer* syntax. With this you can initialize the elements of a collection with a more lightweight syntax.
+Przejdźmy do przyjrzenia się inicjalizacji listy. Ta linia nie kończy się wywołaniem konstruktora bezparametrowego, ale elementami listy, zdefiniowanymi wewnątrz klamerek. Nazywamy to składnią *inicjalizatora kolekcji*. Pozwala to zainicjalizować kolekcję "krócej". 
 
-There is similar way to initialize properties of an object, which is called the *object initializer*.
+W podobny sposób możemy zainicjalizować właściwości (properties) obiektu, nazwiemy to *inicjalizatorem obiektu*
 
-Even though it doesn't belong to this specific example, but if you would combine the `var` keyword and the object initializer syntax, you would arrive to the so called anonymous types. This is really useful when you want to store temporary information in the middle of your algorithm, in a nice and structured format, without explicitly creating the class(es) that represent that structure.
+Może nie ma tego w powyższym przykładzie, ale jeśli chcesz połączyć słówko kluczowe  `var` ze składnią inicjalizatora obiektu, stworzysz typ anonimowy. To bardzo użyteczne, kiedy chcesz przechować tymczasowe informacje wewnątrz swojego algortytmu w ładnym i uporządkowanym formacie, bez jawnego tworzenia klas(y), która będzie reprezentowała taką strukturę.
 
 ```csharp
 var person = new { Name = "Emil", Age = 27 };
 ```
 
-Here the compiler can look at the right side of the assignment operator, it won't be able to guess the type of the variable... so it generates one behind the scene.
+Tu kompilator może zobaczyć na prawą stronę przypisania i nie będzie mógł wywnioskować typu zmiennej... więc stworzy sobie taki typ na boku. 
 
-Let's get back to the original example, and take the refactoring of the code one step further.
+Wróćmy do początkowego przykładu i zrefaktoryzujmy go jeszcze bardziej.
 
 ```csharp
 return numbers
@@ -124,45 +124,46 @@ return numbers
     .Sum();
 ```
 
-If you remember, the `numbers` variable is a collection of integers. How can you call a method called `Where()` on it, when the `List<T>` type doesn't have such method? The answer for this question is extension methods. In the good old days when you wanted to add new functionality to a type, you inherited a new class from the original type and defined the new method on it. This approach has two main problems though. On one side it's possible that the type you want to extend is `sealed`, the other problem is that even if you can define your own "super type", you will have to use that throughout your application and convert back and forth between that and the original type on the edges of your library.
+Jak pamiętasz, zmienna `numbers` jest kolekcją liczb naturalnych typu integer. Jak wywołasz metodę  `Where()` na tym, skoro typ `List<T>` nie ma takiej? Odpowiedzią są metody rozszerzające, znane jako extension methods. W starych dobrych czasach, kiedy chciało się dołożyć nową funkcjonalność do typu, tworzyło się nową klasę, dziedziczyło się po oryginalnej i dopisywało tam nowe metody. Były z tym dwa problemy. Z jednej strony było możliwe, że typ był zapieczętowany słówkiem `sealed`, z drugiej było konieczne definiowanie własnego "super typu" i konwertowanie go w tę i z powrotem na krawędziach biblioteki.
 
-You don't have to think something too complicated. Just think about a function that extends the `string` with some special kind of formatting. If you want to use this logic in multiple places, you either have to move it to a static helper class or derive your `SuperString` class. The latter in this specific example is not actually possible because the string type is `sealed`. So you are left with the static class. But think about how it would look if you would have to use more of these operations after each other...
+Nie myśl, że to było jakieś zbyt skomplikowane. Po prostu pomyśl o funkcji rozszerzającej typ `string` o jakiś specjalny rodzaj formatowania. Jeżeli chcesz użyć tej logiki w wielu miejscach, musisz przenieść to do statycznej funkcji pomocniczej albo wyprowadzić swoją klasę `SuperString`. Tutaj nie bardzo jest możliwość, bo typ jest opatrzony słówkiem `sealed`. Także pozostaje nam klasa statyczna. I teraz zastanów się jak to by wyglądało jeśli chciałbyś użyć więcej takiej operacji po sobie. 
 
-To solve these kinds of problems, Microsoft introduced the extension methods in C#, which makes it possible to extend any type (class, struct or even interface) using the following syntax:
+Aby rozwiązać tego typu problemy, Microsoft wprowadził metody rozszerzające w C#, które umożliwiły rozszerzenie typu (klasy, struktury, interfejsu, czego bądź) poprzez użycie takiej składni:
 
 ```csharp
 public static string SpecialFormat(this string s, int spaces)
 ```
 
-You have to place these extension methods in a static class. The interesting part of this method signature is its very first parameter that has the `this` keyword in front of it. It means that you are extending the `string` class with this method. Whenever you have a `string` in your application, you can just call this method, the system will automatically hide this first parameter by implicitly passing the reference of the `string` there, and you only have to provide - in this example - the `int spaces` parameter. 
+Możesz umieścić takie metody rozszerzające w klasie statycznej. Interesującą częścią sygnatury jest ten pierwszy parametr ze słówkiem kluczowym `this` na początku. To znaczy, że można rozszerzyć klasę `string`  taką metodą. Gdziekolwiek użyjesz `string`a w swojej aplikacji, możesz wywołać tą metodę, system z automatu ukryje pierwszy parametr, niejawnie przekazując tam referencję tego  `string` musisz przekazać więc tylko- w tym przykładzie - parametr `int spaces`. 
 
-It's important to understand, that the extension method is just a syntactic sugar over the static methods, meaing these methods won't have any special access to the first parameter (with the `this` keyword) other than having a reference to it. You won't be able to access non-public parts of the extended object - except if the object has internal parts and you define the extension method in the same assembly.
+To ważne, aby zrozumieć, że metody rozszerzające są tylko składniowymi wodotryskami (syntactic sugar) nad metodami statycznymi, nie dodającymi żadnego specjalnego dostępu do pierwszego parametru (tego ze słowem kluczowym `this`)  innego niż posiadanie referencji do niego. Nie ma dostępu do niepublicznych części klasy rozszerzanego obiektu - z wyjątkiem części ze słówkiem "internal" jeśli funkcja jest z tego samego assembly.
 
-In action it will look something like this.
+Tak to wygląda w akcji:
 
 ```csharp
 "Hello World".SpecialFormat(42);
 ```
 
-The way LINQ uses these extension methods brings this to the next level. To stay at the original example, let's take a quick look at the `Where()` method's signature.
+Sposób, w jaki LINQ używa metod rozszerzających przenosi nas na wyższy poziom. Aby zachować oryginalny przykład spójrzmy szybciutko na sygnaturę metody  `Where()` :
 
 ```csharp
 public static IEnumerable<T> Where<T>(this IEnumerable<T> enumerable, Func<T, bool> predicate)
 ```
 
-The thing that you should pay attention to is that it extends the `IEnumerable<T>` interface and returns an object of type `IEnumerable<T>` as well. Almost all of the LINQ operators' signature looks like this, which is good because it enables the composition of these operators, so you can use as many of these operators after each other as many you want. The current example shows this very well by using the `Where()`, `Select()` and `Sum()` operators without introducing any kind of intermediate variables.
+To, na co powinniśmy zwrócić uwagę, to rozszerzenie interfejsu `IEnumerable<T>` i oczywiście zwrócenie obiektu typu `IEnumerable<T>`. Większość operatorów LINQ ma sygnaturę podobną do powyższej i to dobrze, bo możemy je połączyć ze sobą w dowolnie długi łańcuszek. Powyższy przykład pokazuje bardzo dobrze użycie operatorów `Where()`, `Select()` i `Sum()` bez wprowadzania żadnych dodatkowych wewnętrznych zmiennych. 
 
-The other typical feature of LINQ operators is that they leave the important part of the work to you. In case of the `Where()` operator, the implementation only deals with iterating the original collection and building a new one, but the predicate for the selection logic is a parameter and it's up to you to define your logic to say which element stays and which one has to go. For this it uses a `Func<T, bool>` delegate, that represents a method that receives one element of the collection (the one that the `Where()` operator is internally just iterating through) and returns a `bool` which tells the operator whether the element can stay or it has to go.
+Inna charakterystyczna funkcjonalność operatorów LINQ to pozostawianie najważniejszej części pracy Tobie. W przypadku, operatora`Where()` operator, implementacja tylko iteruje po oryginalnej kolekcji i buduje nową, ale na jakiej podstawie ma wybrać elementy, to już sam decydujesz, podając delegata typu `Func<T, bool>`  reprezentującego metodę, która przyjmuje element kolekcji i zwraca `bool`a, który decyduje czy element ma wejść do nowej kolekcji czy nie. 
 
-If you continue reading the sample code, you very quickly arrive to an interesting expression passed as a parameter to the Where (and later to the Select) method.
+Jeśli kontynuować czytanie przykładu, szybko dojdziemy do interesującego wyrażenia przekazanego do parametru Where'a (a dalej również Selecta).
 
 ```csharp
 num => num % 2 == 0
 ```
 
-This is called a lambda expression. With this lightweight syntax it's possible to write a method (and pass it to some other part of the code as a parameter) without actually writing a method. With this you have the ability to write your logic in place instead of writing a method somewhere and referring to that as a delegate.
+Mamy tu wyrażenie lambda. Ta lekka składnia umożliwia pisanie metody (i przekazanie jej gdzieś jako parametr)bez tworzenia metody. Możesz napisać logikę "w miejscu" zamiast pisać metodę gdzieś obok i przekazać ją jako delegata.
 
-The full syntax of a lambda expression looks like this:
+
+Pełna składnia wyrażenia lambda wygląda mniej więcej tak: 
 
 ```csharp
 (param1, param2) =>
@@ -172,14 +173,13 @@ The full syntax of a lambda expression looks like this:
 };
 ```
 
-Before the arrow operator (`=>`), between parentheses you get the parameters, and after the arrow, between curly braces you have the body of the method.</br>
-The reason you don't have to provide any type information for the parameters or the return type is because you are passing this expression as a delegate, so the compiler knows already all those information. </br>
-There are some shortcuts as well.</br>
-If there's only one parameter, you can loose the parentheses, but if there's no parameter, you have to include an empty pair of parentheses.</br>
-If the expression only contains one line of code, you also don't have to wrap it between curly braces and don't have to use the explicit `return` keyword.</br>
-And of course don't forget about the case where you actually have the method that matches the delegate's signature, in which case you can provide only the name of the method, so you don't have to write something like `Method(x => F(x))`, it's enough to just write `Method(F)`.</br>
-And just as a "fun fact" I'd like to mention that parallelizing the aforementioned example would only require one more operator in the beginning of the expression.
-
+Przed operatorem grubej strzałki (`=>`, czyt "takie że"), w nawiasie podajemy parametry, a po strzałce w klamerkach piszemy ciało metody </br>
+Powodem, dla którego nie podajemy informacji o typie parametru czy wartości zwracanej jest przekazywanie wyrażenia jako delegatu, tak więc kompilator ma te informacje. </br>
+Oczywiście jest pewien skrót.</br>
+Jeśli mamy tylko jeden parametr, możemy nie pisać nawiasów, ale jak nie ma żadnych parametrów, musimy te  puste nawiasy napisać</br>
+Jeżeli wyrażenie mieści się w jednej linijce, nie musimy ciała wyrażenia zamykać w klamerkach, ani używać jawnie słowa kluczowego `return`.</br>
+I oczywiście niezapominajmy o sytuacji, gdy mamy metodę, która pasuje do potrzebnej sygnatury, kiedy to możemy ją przekazać jako  `Method(x => F(x))`, wystarczy że napiszemy wtedy `Method(F)`.</br>
+Jako "fun fact"  tylko nadmienię, że zrównoleglenie takiego wyrażenia wymaga dodania jednego operatora na jego początku. 
 ```csharp
 return numbers
     .AsParallel()
@@ -188,9 +188,8 @@ return numbers
     .Sum();
 ```
 
-Thanks to the `AsParallel()` operator the whole query operation will run in parallel. Just think about what you would do if this requirement would come up after only having the original implementation in place.
-
-LINQ is actually more than these language elements, there is actual language level support to write query expressions, but that's not really important from this book's point of view. What is important that LINQ is a smart combination of the aforementioned underlying language features, and a huge set of predefined extension methods for various types. One of those many types is the `IEnumerable<T>` class, but LINQ has very similar extension methods for other types of data sources, like relational databases (LINQ to SQL), XML (LINQ to XML), or if you want to think about it that way, events (LINQ to Events), which leads to Rx.
+Dzięki operatorowi `AsParallel()` całe wyrażenie jest wykonywane równolegle. Po prostu zastanów się, co byś zrobił, gdyby ten wymóg pojawił się po wprowadzeniu pierwotnej implementacji.
+LINQ to w rzeczywistości więcej niż elementem języka, mamy rzeczywiście na poziomie języka wsparcie w pisaniu zapytań, ale nie jest to istotne z punktu widzenia tej książki. To co ważne, LINQ to sprytna kombinacja wspomnianych wcześniej podstawowych funkcji językowych i ogromnego zestawu predefiniowanych metod rozszerzających dla różnych typów.  Jednym z wielu jest klasa  `IEnumerable<T>` ale LINQ bardzo podobne metody rozszerzające dla innych typów źródeł danych, takich jak relacyjne bazy danych (LINQ to SQL), XML (LINQ to XML), jeśli chcesz to tak rozpatrzeć , wydarzenia (LINQ to Events), co nas prowadzi do Rx.
 
 ## LINQ vs Rx
 
