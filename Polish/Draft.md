@@ -6,8 +6,8 @@
   + [Co to jest LINQ?](#co-to-jest-linq)
   + [LINQ vs Rx](#linq-vs-rx)
 + **Hello Rx World**
-  + [Preparations](#preparations)
-  + [Traditional approach](#traditional-approach)
+  + [Przygotowania](#przygotowania)
+  + [Podejście tradycyjne](#podejście-tradycyjne)
   + [Rx approach](#rx-approach)
   + [Summary](#summary)
 + **Rx = Observables + LINQ + Schedulers**
@@ -202,20 +202,20 @@ LINQ to w rzeczywistości więcej niż elementem języka, mamy rzeczywiście na 
 
 # Hello Rx World
 
-## Preparations
+## Przygotowania
 
-In this chapter you will see a more realistic but still relatively simple example, that will demonstrate how much Rx simplifies your life even after the `async`/`await` keywords.
+W tym rozdziale zobaczysz bardziej realistyczne, ale nadal proste przykłady, które zademonstrują jak bardzo Rx ułatwia twoje życie nawet po słowach kluczowych `async`/`await`.
 
-You will build a search application that works with a simulated web service. This service will provide suggestions and results from a hard coded list of words and more importantly it will simulate varying latency and failures.
+Zbudujemy wyszukiwarkę pracującą na zasymulowanym webserwisie. Będzie on dostarczał sugestie i wyniki z zahardkodowanej listy słów i co ważniejsze, zasymuluje losowe opóźnienia i błędy.
 
-Let's build the frame of the application so you can focus on the important part of the code later in the chapter.
+Zbudujmy ramę aplikacji i będziemy się mogli skupić później na ważniejszych częściach kodu z tego rozdziału. 
 
-* Open Visual Studio (2015)
-* Create a new project (`File / New / Project`)
-* In the dialog window select `Windows / Universal` on the left hand pane
-* Then the `Blank App (Universal Windows)` project template on the right.
-* Add the Rx NuGet package to the project by typing `PM> Install-Package System.Reactive` to the Package Manager console
-* Get a list of words and save them in a static class named `SampleData`, returned by a method named `GetTop100EnglishWords()`. For reference here is the sample data I used in my application:
+* Uruchom Visual Studio (2015)
+* Stwórz nowy projekt (`File / New / Project`)
+* W oknie dialogowym w lewym panelu wybierz   `Windows / Universal` 
+* Potem szablon projektu o nazwie`Blank App (Universal Windows)` po prawej.
+* Dodaj NuGet paczkę  Rx poprzez wpisanie`PM> Install-Package System.Reactive` w konsoli managera pakietów.
+* Zgromadź listę losowych słów i zapisz ją w klasie statycznej o nazwie `SampleData`, i zwróć w metodzie o nazwie`GetTop100EnglishWords()`. Powinieneś mieć coś takiego:
 
 ```csharp
 public static class SampleData
@@ -239,53 +239,52 @@ public static class SampleData
 }
 ```
 
-* Build the fake web service that will work with this sample data and simulate latency and failure. As a first step create the latency and failure simulation method
+* Zbuduj fejkowy webserwis, który będzie pracował na przykładowych danych i symulował opóźnienia i błędy. Najpierw zajmijmy się tym symulatorem:
 
 ```csharp
 private async Task SimulateTimeoutAndFail()
 {
-    // Simulating long time execution         
+    // Symulacja długiego czasu wykonania       
     var random = new Random();
     await Task.Delay(random.Next(300));
 
-    // Simulating failure         
+    //Symulacja błędu      
     if (random.Next(100) < 10)
         throw new Exception("Error!");
 }
 ```
 
-* The next method should be the one that returns the result for a search, as it won't do anything but generate a `string` saying *"This was your query: YOUR_QUERY"*
+*  Kolejną metodą będzie zwrócenie wyniku wyszukiwania, jako  `string` mówiący *"To jest twoje zapytanie:  YOUR_QUERY"*
 
 ```csharp
 public async Task<IEnumerable<string>> GetResultsForQuery(string query)
 {
     await this.SimulateTimeoutAndFail();
 
-    return new string[] { $"This was your query: {query}" };
+    return new string[] { $"To jest twoje zapytanie: {query}" };
 }
 ```
 
-* Last but not least, the most important part of the service is the one that will generate the suggestions. It will take the query, split it into individual words, try to suggest possible endings for the last word using the sample data, and generate the full suggestions by taking the "head" of the query (all the words before the last one) and the possible suggestions for the last one and combine them into strings.
-
+* Last but not least, najważniejsza część serwisu, którą będzie generowanie sugestii. Jeśli weźmiemy zapytanie, podzielimy je na indywidualne słowa, możemy spróbować podpowiedzieć końcówkę ostatniego z nich używając przykładowych danych, i wygenerować pełną sugestię na podstawie początku zapytania (wszystkich słów poza ostatnim) i możliwe propozycje z ostatniego łącząc je w cały napis. 
+* 
 ```csharp
 public async Task<IEnumerable<string>> GetSuggestionsForQuery(string query)
 {
     await this.SimulateTimeoutAndFail();
 
-    // Split "The Quick Brown Fox" to [ "The", "Quick", "Brown" ] and "Fox"
+    // Dzieli "The Quick Brown Fox" na [ "The", "Quick", "Brown" ] i "Fox"
     var queryWords = query.ToLower().Split(' ');
     var fixedPartOfQuery = queryWords.SkipLast(1);
     var lastWordOfQuery = queryWords.Last();
 
-    // Get all the words from the 'SampleData' 
-    // that starts with the last word fragment of the query
+    // Bierze wszystkie słowa z 'SampleData' 
+    // które zaczynają się jak kawałek ostatniego kawałka zapytania
     var suggestionsForLastWordOfQuery = SampleData
         .GetTop100EnglishWords()
         .Select(w => w.ToLower())
         .Where(w => w.StartsWith(lastWordOfQuery));
 
-    // Combine the "fixed" part of the query 
-    // with the suggestions for the last word fragment
+    // Łączenie kawałków w całość
     var suggestionsToReturn = suggestionsForLastWordOfQuery
         .Select(s => fixedPartOfQuery.Concat(new[] { s }))
         .Select(s => string.Join(" ", s))
@@ -295,7 +294,7 @@ public async Task<IEnumerable<string>> GetSuggestionsForQuery(string query)
 }
 ```
 
-* Now the only missing piece is the UI. It will be very simple, a `TextBox` to type the query into, a `Button` to initiate the search, a `TextBlock` for "debug" information and a `ListView` to display the suggestions
+* Teraz brakujący kawałek UI. to będzie prosty `TextBox` do wpisania zapytania, `Button`żeby zapuścić wyszukiwanie ,  `TextBlock`do informacji debugujących i `ListView` do wyświetlania sugestii
 
 ```XML
 <Grid Margin="100">
@@ -312,7 +311,7 @@ public async Task<IEnumerable<string>> GetSuggestionsForQuery(string query)
         </Grid.ColumnDefinitions>
 
         <TextBox x:Name="SearchBox" />
-        <Button x:Name="SearchButton" Grid.Column="1" Content="Search" />
+        <Button x:Name="SearchButton" Grid.Column="1" Content="Szukaj" />
     </Grid>
 
     <TextBlock x:Name="ErrorLabel" Grid.Row="1" Text="Status" />
@@ -321,7 +320,7 @@ public async Task<IEnumerable<string>> GetSuggestionsForQuery(string query)
 </Grid>
 ```
 
-## Traditional approach
+## Podejście tradycyjne
 
 Now that you have the foundation of the app, let's take a look at the high level description of the problem you are facing.
 
