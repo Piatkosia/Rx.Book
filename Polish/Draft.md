@@ -8,7 +8,7 @@
 + **Hello Rx World**
   + [Przygotowania](#przygotowania)
   + [Podejście tradycyjne](#podejście-tradycyjne)
-  + [Rx approach](#rx-approach)
+  + [Rx nadchodzi](#rx-nadchodzi)
   + [Summary](#summary)
 + **Rx = Observables + LINQ + Schedulers**
   + [Preparation](#preparations-1)
@@ -448,9 +448,9 @@ public async void ServiceCall_Throttle(string query)
 }
 ```
 
-### Distinct
+### Niepowtarzalność
 
-As described before, distinction check has a very simple logic: only do the service call if the query is different from the previous one.
+Jak opisałem wcześniej, sprawdzenie niepowtarzalności ma bardzo prostą logikę: wołamy serwis tylko wtedy, kiedy zapytanie jest inne niż poprzednie.
 
 ```csharp
 private string lastDistinctParameter;
@@ -470,11 +470,14 @@ public async void ServiceCall_Distinct(string query)
 
 ### Race condition
 
-Dealing with race condition will happen with a typical optimistic concurrency approach. Tag the service call with a unique identifier save it in a shared variable, wait for it to return and check if it this time the saved identifier is still the same as the identifier of the just returned service call. <br/>
-If they are the same, it means that no other service calls were issued during the time the original service call was being processed, and it's still the latest, most recent result. <br/>
-If they don't match though, it means that another service call has been made while waiting for the first one, invalidating the first service call's result as it's no longer the most recent one.
+Radzenie się z wyścigami może nastąpić w przypadku typowym optymistycznym podejściu do współbieżności.  
+Oznaczanie wywołania unikalnym identyfikatorem i zapisanie go we współdzielonej zmiennej, poczekanie na odpowiedź i sprawdzenie czy tym razem zapisany jest taki sam identyfikator jak zwrócony przez wywołanie serwisowe. <br/>
+Jeśli są takie same, to znaczy że nic innego nie wołało serwisu w międzyczasie i mamy ostatni wynik.
+<br/>
+Jak nie pasują do siebie, to znaczy że inne wywołanie serwisowe poszło w trakcie gdy czekaliśmy na wynik z poprzedniego i obecne wywołanie nie jest już najnowszym. 
 
-In this specific example you won't have to actually explicitly tag the service calls with some kind of `Guid`, you can just use the `Task` object's reference that represents the service call.
+W tym konkretnym przykładzie nie będzie konieczne jawne oznaczanie wywołań serwisowych za pomocą `Guid`, wystarczy użyć odwołania do obiektu` Task`, które reprezentuje wywołanie usługi.
+
 
 ```csharp
 private Task<IEnumerable<string>> lastCall;
@@ -491,9 +494,9 @@ public async void ServiceCall_RaceCondition(string query)
 }
 ```
 
-### All together
+### Wszystko razem
 
-Now, that you have an idea about the individual pieces, let's try to put them together and also see how the resulting implementation can actually be used.
+Teraz jak mamy pomysł dla pojedynczych kawałków, złóżmy to do kupy i zobaczmy jaka będzie ostateczna implementacja, której obecnie użyjemy.
 
 ```
 public class ServiceCallWrapper<TParam, TResult>
@@ -504,17 +507,17 @@ public class ServiceCallWrapper<TParam, TResult>
         this.wrappedServiceCall = wrappedServiceCall;
     }
 
-    // Throttle global variables
+    // zmienne globalne dla "dławienia"
     private readonly TimeSpan throttleInterval = TimeSpan.FromMilliseconds(500);
     private DateTime lastThrottledParameterDate;
 
-    // Distinct global variables
+    // zmienne zapewniające niepowtarzalność
     private TParam lastDistinctParameter;
 
-    // Retry global variables 
+    // zmienne globalna dla powtórzeń
     private readonly int numberOfRetries = 3;
 
-    // Timeout global variables 
+    // zmienne globalne dla timeoutu
     private readonly TimeSpan timeoutInterval = TimeSpan.FromMilliseconds(500);
 
     // Switch global variables 
@@ -528,13 +531,13 @@ public class ServiceCallWrapper<TParam, TResult>
     {
         try
         {
-            // Throttle logic
+            // logika dławienia
             this.lastThrottledParameterDate = DateTime.Now;
             await Task.Delay(this.throttleInterval);
 
             if (DateTime.Now - this.lastThrottledParameterDate < this.throttleInterval) return;
 
-            // Distinct logic
+            // Logika niepowtarzalności
             if (this.lastDistinctParameter?.Equals(query) != true)
                 this.lastDistinctParameter = query;
             else
@@ -542,12 +545,12 @@ public class ServiceCallWrapper<TParam, TResult>
 
             var newCall = Task.Run(async () =>
             {
-                // Retry logic
+                // Logika powtórek
                 for (var tries = 0; tries < this.numberOfRetries; tries++)
                 {
                     try
                     {
-                        // Timeout logic
+                        // Logika timeouta
 ```
 ```csharp
                         var newTask = this.wrappedServiceCall(query);
@@ -560,13 +563,13 @@ public class ServiceCallWrapper<TParam, TResult>
                         if (newTask == firstTaskToEnd) return newTask.Result;
                         else throw new Exception("Timeout");
                     }
-                    catch { /* deal with the exception */ }
+                    catch { /*obsługa wyjątków */ }
                 }
 
-                throw new Exception("Out of retries");
+                throw new Exception("Koniec powtarzania");
             });
 
-            // Switch logic
+            // Logika przełączania
             this.lastCall = newCall;
 
             var result = await newCall;
@@ -583,15 +586,15 @@ public class ServiceCallWrapper<TParam, TResult>
 }
 ```
 
-Even though this implementation is not quite pretty on the inside, using it is fairly simple.
+Chociaż ta implementacja nie jest najpiękniejsza, użycie jej jest dość proste.
 
 ```csharp
 var suggestionsServiceHelper = new ServiceCallWrapper<string, IEnumerable<string>>(this.searchService.GetSuggestionsForQuery);
 
-// Subscribing to events to trigger service call
+// Zasubskrybowanie do zdarzenia by wywołać serwis
 this.searchBox.TextChanged += (s, e) => suggestionsServiceHelper.ServiceCall(this.searchBox.Text);
 
-// Registering callback methods
+// Rejestracja callbacków
 suggestionsServiceHelper.CallBack += this.CallBack;
 suggestionsServiceHelper.ErrorCallBack += this.ErrorCallBack;
 ```
@@ -599,7 +602,7 @@ suggestionsServiceHelper.ErrorCallBack += this.ErrorCallBack;
 ```csharp
 var resultsServiceHelper = new ServiceCallWrapper<string, IEnumerable<string>>(this.searchService.GetResultsForQuery);
             
-// Subscribing to events to trigger service call
+//Zasubskrybowanie do zdarzenia by wywołać serwis
 this.searchButton.Click += (s, e) => resultsServiceHelper.ServiceCall(this.searchBox.Text);
 this.suggestions.ItemClick += (s, e) => resultsServiceHelper.ServiceCall(e.ClickedItem as string);
 this.searchBox.KeyDown += (s, e) =>
@@ -608,12 +611,12 @@ this.searchBox.KeyDown += (s, e) =>
         resultsServiceHelper.ServiceCall(this.searchBox.Text);
 };
 
-// Registering callback methods
+//Rejestracja callbacków
 resultsServiceHelper.CallBack += this.CallBack;
 resultsServiceHelper.ErrorCallBack += this.ErrorCallBack;
 ```
 
-Just for the record the two event handlers for `CallBack` and `ErrorCallBack` have the following implementation in the sample code.
+Teraz dorzućmy `CallBack` i `ErrorCallBack` z przykłądową implementacją.
 
 ```csharp
 private void CallBack(IEnumerable<string> items)
@@ -629,7 +632,7 @@ private void ErrorCallBack(Exception exception)
 }
 ```
 
-## Rx approach
+## Rx nadchodzi
 
 When you think about Rx, you have to think about it as a stream or pipeline. You put a message into the pipeline and it will go through various steps of transformation, filtering, grouping, aggregating, delaying, throttling, etc.
 
