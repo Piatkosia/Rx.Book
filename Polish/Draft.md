@@ -12,7 +12,7 @@
   + [Podsumowanie](#podsumowanie)
 + **Rx = Observables + LINQ + Schedulers**
   + [Przygotowania](#przygotowania-1)
-  + [Observable streams](#observable-streams)
+  + [Strumienie obserwowalne](#strumienie-obserwowalne)
   + [LINQ](#linq)
   + [Schedulers](#shedulers)
   + [Rx + Async](#rx--async)
@@ -748,17 +748,17 @@ W następnym rozdziale zgłębimy się bardziej w Rx, pouczymy się pojęć za n
 
 ## Przygotowania
 
-Just for the sake of having an app that you can use to play with and run the code samples, let's create a UWP "Console" application. The reason for it is that most of the time a traditional console where you can print lines is more than enough, but for some of the examples you will need things like a `TextBox` or pointer events.
+Tylko w celu pobawienia się i odpalenia przykładów stwórzmy "konsolową" aplikację UWP. Powodem, dla którego zwykła aplikacja konsolowa może nie wystarczyć jest to, że do niektórych przykładów będziemy potrzebować czegoś w rodzaju  `TextBox` albo wskaźnika zdarzeń.
 
-Just like in the previous chapter, let's create an empty UWP app
-* Open Visual Studio (2015)
-* Create a new project (`File / New / Project`)
-* In the dialog window select `Windows / Universal` on the left hand pane
-* Then the `Blank App (Universal Windows)` project template on the right.
-* Add the Rx NuGet package to the project by typing `PM> Install-Package System.Reactive` to the Package Manager console
-* Add the Ix NuGet package to the project by typing `PM> Install-Package System.Interactive` to the Package Manager console - this is an extension for regular collections that adds a few more useful operators to the catalogue of LINQ operators.
-* Add a new class file to the project that will contain a little extension method for the `TextBlock` control <br/>
-This extension method will allow you to write on the screen line-by-line and it will always keep only the last 25 lines.
+Tak jak w poprzednim rozdziale, stwórzmy pustą apkę UWP
+* Otwórz Visual Studio (2015)
+* Stwórz nowy projekt (`File / New / Project`)
+* W lewym panelu okna dialogowego wybierz `Windows / Universal` 
+* potem w prawym `Blank App (Universal Windows)`.
+* Dodaj Rx NuGet paczkę wpisując `PM> Install-Package System.Reactive` w konsoli managera pakietu
+* oraz Ix paczkę wpisując tamże `PM> Install-Package System.Interactive`. Jest to roszerzenie dla standardowych kolekcji, które dodaje trochę więcej użytecznych operatorów do katalogu operatorów LINQ.
+* Dodaj plik nowej klasy do projektu, która to klasa będzie zawierała trochę metod rozszerzających dla kontrolki `TextBlock`.<br/>
+Te metody rozszerzające pozwolą ci wypisywać na ekranie tekst linijka po linijce i będzie zostawiać tylko ostatnie 25 z nich.
 
 ```csharp
 public static class TextBlockExtensions
@@ -775,7 +775,7 @@ public static class TextBlockExtensions
 }
 ```
 
-* The next step is to create the UI. It will be very simple just a `TextBlock` and some styling to make it look like a console
+* Następnym krokiem będzie stworzenie prostego UI, zawierającego po prostu kontrolkę `TextBlock`, ostylowaną by wyglądała jak konsola.
 
 ```XML
 <Grid Background="Black">
@@ -783,13 +783,13 @@ public static class TextBlockExtensions
 </Grid>
 ```
 
-* With the `TextBlock` and the extension method defined, you can now write things like this in the page's code behind file
+* Ze zdefiniowanymi metodami roszerzającymi `TextBlock` a, możesz teraz  zapisywać rzeczy na stronie w taki sposób:
 
 ```csharp
 Console.WriteLine("Hello Rx");
 ```
 
-## Observable streams
+## Strumienie obserwowalne
 
 As you could already see it in the previous chapters, Rx at its core gives you the ability to handle asynchronous data streams and perform various operations by applying any number of operators.
 
