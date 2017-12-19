@@ -498,7 +498,7 @@ public async void ServiceCall_RaceCondition(string query)
 
 Teraz jak mamy pomysł dla pojedynczych kawałków, złóżmy to do kupy i zobaczmy jaka będzie ostateczna implementacja, której obecnie użyjemy.
 
-```
+```csharp
 public class ServiceCallWrapper<TParam, TResult>
 {
     private readonly Func<TParam, Task<TResult>> wrappedServiceCall;
@@ -551,11 +551,7 @@ public class ServiceCallWrapper<TParam, TResult>
                     try
                     {
                         // Logika timeouta
-```
-```csharp
                         var newTask = this.wrappedServiceCall(query);
-```
-```
                         var timeoutTask = Task.Delay(this.timeoutInterval);
 
                         var firstTaskToEnd = await Task.WhenAny(newTask, timeoutTask);
