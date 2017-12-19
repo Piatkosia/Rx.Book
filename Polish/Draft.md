@@ -8,10 +8,10 @@
 + **Hello Rx World**
   + [Przygotowania](#przygotowania)
   + [Podejście tradycyjne](#podejście-tradycyjne)
-  + [Rx nadchodzi](#rx-nadchodzi)
-  + [Summary](#summary)
+  + [Podejście Rx](#podejście-rx)
+  + [Podsumowanie](#podsumowanie)
 + **Rx = Observables + LINQ + Schedulers**
-  + [Preparation](#preparations-1)
+  + [Przygotowania](#przygotowania-1)
   + [Observable streams](#observable-streams)
   + [LINQ](#linq)
   + [Schedulers](#shedulers)
@@ -28,7 +28,7 @@ Reactive Extensions (tudzież Rx) to biblioteka klas pozwalająca na budowanie a
 
 W skrócie: Rx = Observables + LINQ + Schedulers
 
-(nie wiem czy jest sens te słowa tłumaczyć, ale byłoby to coś )
+(nie wiem czy jest sens te słowa tłumaczyć, ale byłoby to coś w stylu Rx = Obserwowani + LINQ + Harmonogramy -dalej postaram się używać oryginalnego równania, nie przytoczonego potworka)
 
 ## Czym jest Observable?
 
@@ -41,7 +41,7 @@ W przeciwieństwie do tego, asynchroniczność oznacza, że chcesz coś zrobić 
 Weźmy przykład zdarzenia  `Click` , następującego po naciśnięciu guzika w programie, jak również odpowiedzi z webservice'u. W tym drugim przypadku jest bardzo, ale to bardzo prawdopodobne, że jeśli chodzi o kolejność wykonywania komend, wiesz dokładnie, że chcesz tylko robić rzeczy po otrzymaniu odpowiedzi, acz to może zająć trochę czasu i gdyby to wywołać synchronicznie, zablokowało by się wątek, dopóki nie wrócimy z funkcji i nic byśmy nie zrobili. Znamy to doświadczenie, gdy aplikacja się zwiesza i nie odpowiada. Aby upewnić się że nic podobnego się nie zdarzy, wywołujemy taki kod asynchronicznie, co oznacza że logika wykonuje się (lub czeka na I/O) w tle bez blokowania wątku wywołującego i dostajemy odpowiedź przez coś w stylu mechanizmu callback'u (czy tam wywołania zwrotego). Jeśli byłeś w branży developerskiej przez chwilę, z pewnością pamiętasz mroczne dni łańcuchów callbacków, ale na szczęście w  in C# 5.0 / .NET 4.5 (w 2012) Microsoft wprowadził słowa kluczowe  `async` i `await` które umożliwiają pisanie kodu asynchronicznego wyglądającego jak zwykły synchroniczny kod. Po prostu pomyśl o trudnościach w implementacji prostych konstrukcji językowych jak operatory warunkowe, pętle, albo bloki try-catch w tradycyjnej formie (callbacki) w programowaniu asynchronicznym. Z tymi nowymi słowami kluczowymi możesz naturalnie używać ich wszystkich, zachowując wydajny, responsywny i skalowalny kod asynchroniczny. 
 Ale nawet jeśli znacznie ułatwia to życie w wielu scenariuszach, w momencie, gdy chcesz zrobić coś bardziej skomplikowanego, np. ponowienie (retry), przekroczenie limitu czasu (timeout) lub dodanie funkcji stronicowania do wywołania webservice'u, musisz zacząć pisać złożoną logikę, ponieważ ukrywanie trudności radzenia sobie z callbackami nie uchroni Cię przed wdrożeniem tych niestandardowych operacji.
 
-Zdarzenia [eventy] (w C#)mają poważny problem, bo nie są obiektami, nie możesz przekazać ich jako parametrów metod, a śledzenie subskrybentów nie jest takie proste. I tu przychodzi z pomocą wzorzec Obserwator, ponieważ z nim możesz zaimplementować obsługę zdarzeń  samodzielnie, zamiast używać to, co oferuje język, także możesz mieć pełną kontrolę nad źródłem zdarzenia, subskrybentami i metodami powiadamiania.
+Zdarzenia [eventy] (w C#) mają poważny problem, bo nie są obiektami, nie możesz przekazać ich jako parametrów metod, a śledzenie subskrybentów nie jest takie proste. I tu przychodzi z pomocą wzorzec Obserwator, ponieważ z nim możesz zaimplementować obsługę zdarzeń  samodzielnie, zamiast używać to, co oferuje język, także możesz mieć pełną kontrolę nad źródłem zdarzenia, subskrybentami i metodami powiadamiania.
 
 Wzorzec projektowy Obserwator składa się z dwóch prostych interfejsów. 
 
@@ -209,6 +209,8 @@ W tym rozdziale zobaczysz bardziej realistyczne, ale nadal proste przykłady, kt
 Zbudujemy wyszukiwarkę pracującą na zasymulowanym webserwisie. Będzie on dostarczał sugestie i wyniki z zahardkodowanej listy słów i co ważniejsze, zasymuluje losowe opóźnienia i błędy.
 
 Zbudujmy ramę aplikacji i będziemy się mogli skupić później na ważniejszych częściach kodu z tego rozdziału. 
+
+Od tłumaczki: Poniżej założę, że nie korzystasz ze spolszczenia VS (a ktoś korzysta?).
 
 * Uruchom Visual Studio (2015)
 * Stwórz nowy projekt (`File / New / Project`)
@@ -520,10 +522,10 @@ public class ServiceCallWrapper<TParam, TResult>
     // zmienne globalne dla timeoutu
     private readonly TimeSpan timeoutInterval = TimeSpan.FromMilliseconds(500);
 
-    // Switch global variables 
+    // zmienne globalne dla przełączania
     private Task<TResult> lastCall;
 
-    // Callback events 
+    // Zdarzenia callbackowe
     public event Action<TResult> CallBack;
     public event Action<Exception> ErrorCallBack;
 
@@ -628,13 +630,13 @@ private void ErrorCallBack(Exception exception)
 }
 ```
 
-## Rx nadchodzi
+## Podejście Rx
 
-When you think about Rx, you have to think about it as a stream or pipeline. You put a message into the pipeline and it will go through various steps of transformation, filtering, grouping, aggregating, delaying, throttling, etc.
+Gdy wyobrażasz sobie Rx, pomyśl o strumieniu lub potoku. Wkładasz wiadomość w potok i ona przechodzi jakieś kroki (przerabianie, transformacje, filtrowanie, agregacje, opóźnianie, tłumienie itd). 
 
-After you defined your logic as a series of steps, you can subscribe to this stream of events and act on anything coming out of it.
+Po zdefiniowaniu logiki jako kroki, możesz zasubskrybować ten strumień zdarzeń i działać ze wszystkim, co z tego wyjdzie.
 
-I don't want to waste your time too much, because the concepts and a lot of the operators are going to be explained in depth in the next chapter, so let me just show you the final implementation of the "Rx-style" `ServiceCallWrapper` class.
+Nie chcę marnować za dużo twojego czasu, ponieważ koncepcję i wiele operatorów omówię w następnym rozdziale, pokażę tyko końcową implementację klasy `ServiceCallWrapper` w "stylu Rx".
 
 ```csharp
 public static class ServiceCallWrapper
@@ -656,13 +658,13 @@ public static class ServiceCallWrapper
     }
 }
 ```
+Jak widać, kod jest *znacznie* prostszy i bardziej czytelny niż "tradycyjne podejście".
 
-As you can see the code is *significantly* simpler and more readable than the "traditional approach".
 
-There are two main differences that I would like to point out. You won't call this method directly each time you have a new value, you just provide "some source" that will provide the input strings for the service call.<br/>
-The other one is that as an output you didn't have to define events, it will be just another `IObservable` stream that the consumer logic can subscribe to.
+Są dwie główne różnice, które chciałbym wskazać. Nie musisz wywoływać tej metody bezpośrednio za każdym razem, gdy masz nową wartość, po prostu podaj "jakieś źródło", które zapewni ciągi wejściowe dla zgłoszenia serwisowego.<br/>
+Po drugiej stronie na wyjściu nie musisz definiować zdarzeń, to będzie po prostu kolejny strumień obiektów typu  `IObservable`, które logika konsumenta może zasubskrybować. 
 
-If you remember what I wrote about LINQ, you might notice a similarity of the method signature: receiving some `IObservable<TIn>` as a parameter and returning an `IObservable<TOut>`. This is a perfect candidate to be turned into an extension method - and by the way a great example to show one easy way to build custom operators for Rx.
+Jeżeli pamiętasz co napisałem o LINQ, możesz zauważyć podobieństwo sygnatury metody: odbierasz jakiegoś `IObservable<TIn>`jako parametr i zwracasz `IObservable<TOut>`. To perfekcyjny kandydat do zmiany w metody rozszerzające - i swoją drogą świetny przykład do pokazania prostej drogi do budowania niestandardowych operatorów dla Rx.
 
 ```csharp
 public static IObservable<TOut> CallService<TIn, TOut>(this IObservable<TIn> source, Func<TIn, Task<TOut>> serviceCall)
@@ -671,17 +673,17 @@ public static IObservable<TOut> CallService<TIn, TOut>(this IObservable<TIn> sou
 }
 ```
 
-The remaining bit is to show the code to use this implementation.
+Pozostały kawałek to pokazanie kodu, który użyje tej implementacji.
 
-The code to get suggestions:
+Kod do pobierania sugestii:
 
 ```csharp
-// Define source event (observable)
+// Definicja zdarzenia źródłowego (observable)
 var queryTextChanged = Observable
     .FromEventPattern(this.searchBox, nameof(this.searchBox.TextChanged))
     .Select(e => this.searchBox.Text);
 
-// Subscribe to the prepared event stream
+// Zasubskrybowanie do przygotowanego strumienia zdarzeń
 queryTextChanged
     .CallService(this.searchService.GetSuggestionsForQuery)
     .ObserveOnDispatcher()
@@ -690,10 +692,10 @@ queryTextChanged
     .Subscribe();
 ```
 
-And the code to get results:
+I kod do pobierania wyniku:
 
 ```csharp
-// Define source events (observables)
+// Definicja zdarzeń źródłowych (observables)
 var searchButtonClicked = Observable
     .FromEventPattern(this.searchButton, nameof(this.searchButton.Click))
     .Select(_ => this.searchBox.Text);
@@ -707,11 +709,11 @@ var enterKeyPressed = Observable
     .Where(e => e.EventArgs.Key == VirtualKey.Enter)
     .Select(_ => this.searchBox.Text);
             
-// Merge the source events into a single stream
+// Połączenie zdarzeń źródłowych w jeden strumień
 var mergedInput = Observable
     .Merge(searchButtonClicked, enterKeyPressed, suggestionSelected);
 
-// Subscribe to the prepared event stream
+// Subskrypcja do przygotowanego strumienia 
 mergedInput
     .CallService(this.searchService.GetResultsForQuery)
     .ObserveOnDispatcher()
@@ -720,31 +722,31 @@ mergedInput
     .Subscribe();
 ```
 
-What you can see here is a bunch of example to transform a traditional .NET `event` into an `IObservable` stream. To do this you can use the `Observable.FromEventPattern` static method. EventPattern in this context refers to the typical `(object sender, EventArgs args)` signature, so that's what this method expects. You just pass the event source object and the name of the event, and optionally the more specific types for the `EventArgs` and the sender object.
+To co możesz tu zobaczyć, to garstka przykładów przekształcenia tradycyjnych zdarzeń (`event`) .NETowych do strumienia `IObservable`. Aby tego dokonać używamy metody statycznej  `Observable.FromEventPattern`.  EventPattern w tym kontekście odnosi się do typowej sygnatury `(object sender, EventArgs args)`, a więc jest to tym, czego się ta metoda spodziewa. Po prostu przekaż obiekt zdarzenia źródłowego i nazwę zdarzenia, i opcjonalnie bardziej wyspecyfikowane typy `EventArgs` oraz obiekt nadawcy.
 
-Once you converted the event into an observable stream, you can start doing various operations on it, like extracting the useful information, transforming this weird `EventPattern<T>` object into something more meaningful, in this case the `string` that you want to send to the service calls. 
+Po tym jak raz przekonwertujesz zdarzenie w strumień obserwowalny, możesz zacząć robić na nim różne operacje, jak wyciąganie użytecznych informacji, przetworzenie dziwnego obiektu `EventPattern<T>` w coś bardziej wyrazistego, w tym przypadku obiekt typu `string` który możesz wysłać do wywołania serwisu. 
 
-You can also do some filtering as you can see with the `enterKeyPressed` example. You subscribe to the event, do the filtering based on the pressed key and extract the useful information. It means it will produce a new event containing the content of the `SearchBox` every time the user hits the Enter key.
+Możesz także robić jakieś filtrowanie, jak widać w przykładzie z `enterKeyPressed`. Subskrybujesz zdarzenie, robisz filtrowanie po wciśniętych klawiszach  i wyciągasz użyteczne informacje. To znaczy, że zostanie wyprodukowane nowe zdarzenie zawierające zawartość z `SearchBox`  za każdym razem kiedy użytkownik wciśnie Enter. 
 
-You should notice the creation of the `mergedInput` observable. You defined 3 separate observables, but you actually want to do the exact same thing with them, so it would be better to have all of those merged in just one stream. That's what you can use the `Merge()` operator for.
+Powinieneś zauważyć utworzenie obserwowalnego `mergedInput`a. Definiujesz 3 osobne `observable`, ale tak na prawdę chcesz wyciągnąć z nich tą samą rzecz, więc lepiej byłoby połączenie ich w jeden strumień. Do tego można użyć operatora `Merge()`.
+ 
+Kiedy już masz swoje źródło na miejscu, możesz w końcu przygotować swoją metodę rozszerzającą dla klasy `ServiceCallWrapper i po prostu użyć go jako część definicji potoku, tak jak każdy inny operator.
 
-Once you have your source in place, you can finally use your prepared extension method for the `ServiceCallWrapper` class and just naturally use it as part of the pipeline definition, just like any other operator.
+Reszta potoku wygląda następująco: <br/>
+Operator `ObserveOnDispatcher()`  jest użyty do sterowania przepływem strumienia obserwowalnego z powrotem do wątku UI. <br/>
+Operator `Do()` pozwala na inspekcję strumienia na określonej pozycji -  mamy tu oczywiście wywołanie metod CallBack'owych. <br/>
+Operator `Retry()` jest konieczny aby mieć pewność, że strumień nigdy nie zostanie zakończony przez jakiś nieobsługiwany wyjątek. <br/>
+I wreszcie metoda `Subscribe()`  jest metodą aktywującą cały potok. Dopóki jej nie wywołasz, strumień jest tylko definicją kroków, ale kroki nie mogą być zasubskrybowane przez siebie na wzajem, więc strumień nie może być aktywny. 
 
-The rest of the pipeline goes like this: <br/>
-The `ObserveOnDispatcher()` operator is used to marshall the flow of the observable stream back to the UI thread. <br/>
-The `Do()` operator lets you to inspect the stream at specific positions - this is where the actual CallBack methods are called. <br/>
-The `Retry()` operator is necessary to make sure the stream never gets terminated by some unhandled exception. <br/>
-And lastly the `Subscribe()` method is the method that actually activates this whole pipeline. Until you don't call subscribe, the stream is just a definition of steps, but the steps won't be subscribed to each other, the stream won't be active.
+## Podsumowanie
 
-## Summary
+W tym rozdziale zobaczyłeś(aś) przykład krok po kroku, porównujący ból programowania asynchronicznego w tradycyjny sposób, oraz łatwość robienia tego samego przy użyciu Rx.
 
-In this chapter you saw a step-by-step example to compare the pain of dealing with asynchronous programming in a traditional way, and the ease of doing the same thing using Rx.
-
-In the next chapter you will learn about the depths of Rx, the concepts behind it, a number of commonly used operators and more.
+W następnym rozdziale zgłębimy się bardziej w Rx, pouczymy się pojęć za nim stojących, poszerzymy wiedzę o wielu powszechnie stosowanych operatorach i nie tylko.
 
 # Rx = Observables + LINQ + Schedulers
 
-## Preparations
+## Przygotowania
 
 Just for the sake of having an app that you can use to play with and run the code samples, let's create a UWP "Console" application. The reason for it is that most of the time a traditional console where you can print lines is more than enough, but for some of the examples you will need things like a `TextBox` or pointer events.
 
