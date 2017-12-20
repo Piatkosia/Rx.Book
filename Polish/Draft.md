@@ -926,7 +926,7 @@ var source = Observable.Interval(TimeSpan.FromMilliseconds(100));
 
 Operator `Timer()` może działać na dwa sposoby. 
 
-On one hand you can use it to produce one event with either by providing a `TimeSpan` to produce that event with some delay after subscribing to the observable; or by providing a `DateTime` as a parameter in which case the value will appear in the stream at that given time.
+Z jednej strony możesz go użyć do wytworzenia jednego zdarzenia, dostarczając `TimeSpan`, aby wytworzyć to zdarzenie z pewnym opóźnieniem po subskrybowaniu obserwowalnego, lub przez podanie parametru `DateTime` jako parametru, w którym to przypadku wartość pojawi się w strumieniu o danej dacie i godzinie.
 
 ```csharp
 var sourceRelative = Observable.Timer(TimeSpan.FromMilliseconds(500));
@@ -935,7 +935,7 @@ var sourceAbsolute = Observable.Timer(new DateTime(2063, 4, 4));
 
 ![](Marble%20Diagrams/Timer.png)
 
-On the other hand you can also provide a second `TimeSpan` parameter in which case the stream won't terminate after just one element, but it will keep generating subsequent elements with the specified time between them.
+Z drugiej strony możesz również podać drugi parametr `TimeSpan`, w którym to przypadku strumień nie zakończy się po tylko jednym elemencie, ale będzie generował kolejne elementy z określonym czasem między nimi.
 
 ```csharp
 var source = Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(1));
@@ -943,15 +943,16 @@ var source = Observable.Timer(TimeSpan.FromSeconds(5), TimeSpan.FromSeconds(1));
 
 ![](Marble%20Diagrams/TimerWithDelay.png)
 
-### Converter operators
+### Operatory konwersji
 
-Even though you learned a couple of ways to construct "observable primitives", in reality it's more likely that you will want to convert some kind of existing data source to an observable stream. This data source can be an existing collection, an asynchronous operation represented by a `Task` object, an `event`, etc.
+Mimo, że nauczyłeś się kilku sposobów konstruowania "obserwowalnych prymitywów", w rzeczywistości jest bardziej prawdopodobne, że będziesz chciał przekształcić jakieś istniejące źródło danych w obserwowalny strumień. To źródło danych może być istniejącą kolekcją, operacją asynchroniczną reprezentowaną przez obiekt `Task`,` event` itp.
 
 #### ToObservable
 
-Two very common scenarios are collections and `Task` objects. For these you can just use the `ToObservable()` extension method to turn them into an observable stream.
+Dwa bardzo typowe scenariusze, to kolekcje i obiekty `Task`.
+Na nich możesz wywołać metodę rozszerzającą `ToObservable()`  aby zmienić je w strumień obserwowalny.
 
-If you have some kind of `IEnumerable` datasource, you can just call the extension method on it and turn it into an `IObservable` stream.
+Jeśli chcesz mieć źródło danych jakiegoś typu `IEnumerable`'a, możesz wywołać na nim metodę rozszerzającą by zmienić ją w strumień `IObservable`.
 
 ```csharp 
 var sourceFromEnumerable = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J" }.ToObservable();
@@ -959,7 +960,7 @@ var sourceFromEnumerable = new[] { "A", "B", "C", "D", "E", "F", "G", "H", "I", 
 
 ![](Marble%20Diagrams/ToObservable.png)
 
-Also if you have a `Task` object, you can just call the extension method to turn it into a stream.
+Również jeśli masz obiekt `Task`, możesz po prostu wywołać metodę rozszerzającą, aby przekształcić go w strumień.
 
 ```csharp
 var sourceFromTask = Task.FromResult("A").ToObservable();
@@ -967,7 +968,7 @@ var sourceFromTask = Task.FromResult("A").ToObservable();
 
 ![](Marble%20Diagrams/FromAsync.png)
 
-Even though the extension method is present and you are free to use it and in some cases it's perfectly fine to use it, I would personally suggest to use the `FromAsync()` operator, because it comes with a few important behaviour differences compared to the `ToObservable()` operator.
+Mimo że metoda rozszerzająca istnieje i możesz z niej korzystać, a w niektórych przypadkach działa to całkiem fajnie, osobiście sugerowałbym użycie operatora `FromAsync ()`, ponieważ zawiera on kilka ważnych różnic w zachowaniu w porównaniu do operator `ToObservable ()`.
 
 #### FromAsync
 
