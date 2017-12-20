@@ -791,31 +791,30 @@ Console.WriteLine("Hello Rx");
 
 ## Strumienie obserwowalne
 
-As you could already see it in the previous chapters, Rx at its core gives you the ability to handle asynchronous data streams and perform various operations by applying any number of operators.
+Jak mogłeś już zobaczyć w poprzednich rozdziałach, Rx u   podstaw umożliwia obsługę asynchronicznych strumieni danych i wykonywanie różnych operacji przez zastosowanie dowolnej liczby operatorów.
 
-Just as a recap, the core interfaces are the `IObservable<T>` and `IObserver<T>`.
+Jako podsumowanie, podstawowymi interfejsami są `IObservable<T>` i `IObserver<T>`.
 
-The `IObservalbe<T>` is an observable object gives you the ability to subscribe to it and "observe it" through its only method, the `Subscribe()`.
+`IObservalbe<T>` jest interfejsem obiektu obserwowalnego, dającym możliwść zasubskrybowania i "obserwacji" wyłącznie za pomocą metody `Subscribe()`.
 
-The `IObserver<T>` interface defines how the observer object looks like. It has an `OnNext()` method that will be called every time the observable emits a new event (so 0 or more times), and `OnError()` and `OnCompleted()` methods that will be called when the observer terminates, either naturally or due to an error. These latter two methods are terminating methods and they can be called 0 or 1 time during the lifecycle of an observable object. They are also mutually exclusive, meaning you can't see both of them emitted by the same observable.
+Interfejs `IObserver<T>`  definiuje jak wyglądają obiekty obserwujące. Mają metodę `OnNext()`, która jest wywoływana każdorazowo, gdy emitowane jest nowe zdarzenie (więc 0 lub więcej razy) oraz metody `OnError()` i `OnCompleted()`, które będą wywołane kiedy obserwator zakończy działanie, czy to naturalnie, czy przez błąd. Dwie ostatnie metody są metodami kończącymi i przez cały cykr życia obserwowanego obiektu można je wywołać 0 albo 1 raz. Są one wykluczające się nawzajem, co oznacza, że nie można ich wywołać dla tego samego obiektu obserwowalnego.
 
-As it's usually "phrased": `OnNext* (OnError | OnCompleted)?`
+Jak to się zwykle formuuje: `OnNext* (OnError | OnCompleted)?`
 
-As a last point before you'd dive into the details of how to create and how to transform existing asynchronous data sources (like an `event` or a `Task`) to observable streams, let's take a quick look at the subscription and the terminology you will see for the rest of this book.
+Ostatnim punktem, nim się zgłębimy w szczegóły tego jak tworzyć i jak przekształcać istniejące asynchroniczne źródła danych (jak `event` czy `Task`) do strumieni obserwowalnych, rzućmy szybciutko okiem na subskrypcje i terminologię którą będziesz mógł zobaczyć w dalszej części książki.
 
-There are 3 main groups of overloads for the `Subscribe()` method.
-* Subscribing by passing an `IObserver` object
-* Subscribing by defining the `OnNext()`, and optionally the `OnCompleted()` and/or `OnError()` callback actions as lambda expressions
+Są 3 główne grupy przeładowania metody  `Subscribe()`.
+* Zasubskrybowanie przez przekazanie obiektu `IObserver` 
+* Zasubskrybowanie  przez definicję metody callbakowej `OnNext()`, i opcjonalnie `OnCompleted()` i/lub `OnError()` jako wyrażeń lambda
   * OnNext
   * OnNext + OnError
   * OnNext + OnCompleted
   * OnNext + OnError + OnCompleted
-* Subscribing without passing any parameter - it will make sense later
-* And all of the above with an optional `CancellationToken` parameter
+* Zasubskrybowanie bez przekazywania żadnych parametrów - to nabierze sensu później
+* Dowolny z powyższych z opcjonalnym parametrem  `CancellationToken`
 
-Throughout this book you will mostly use the second one (passing the lambda expressions) as that's the fastest to implement. Obviously in a real application you would want to build your `Observable` object and build a unit test suite around it, something that you can't quite do with inline defined lambda functions.
-
-The pattern that you should follow for the rest of the examples is the following:
+W całej tej książce będziesz najczęściej używał drugiej  (przekazywanie wyrażeń lambda), ponieważ jest ona najszybsza do zaimplementowania. Oczywiście w prawdziwej aplikacji chciałbyś zbudować swój obiekt `Observable` i zbudować wokół niego zestaw testów jednostkowych, coś, co nie za bardzo pójdzie z wbudowanym funkcjami lambda. 
+Wzorzec, którym należy podążać przy pozostałych przykładach, jest następujący:
 
 ```csharp
 private void Subscribe<T>(IObservable<T> source, string subscribtionName)
@@ -829,17 +828,17 @@ private void Subscribe<T>(IObservable<T> source, string subscribtionName)
 }
 ```
 
-The `ObserveOnDispatcher()` is required to make sure no matter which thread the stream is coming from, it's definitely marshalled to the UI thread.
+ `ObserveOnDispatcher()` jest wymagany by upewnić się, że niezależnie z którego wątku pochodzi strumień, jest on skierowany do wątku UI. 
 
-And the `Subscribe()` method is fairly trivial, you just handle all possible notification types by providing all three of the callbacks for `OnNext`, `OnError` and `OnCompleted`.
+Metoda `Subscribe()` jest dość trywialna, , po prostu obsługujesz wszystkie możliwe typy powiadomień, zapewniając wszystkie trzy wywołania zwrotne dla `OnNext`,` OnError` i `OnCompleted`. 
 
-Even though you now have this console application, you will also have a more visual marble diagram at every operator to describe what they are doing.
+Nawet jeśli masz już tę aplikację konsolową, będziesz mieć bardziej wizualny diagram marmurowy dla każdego operatora, aby opisać, co robią.
 
-They will look something like this:
+One wyglądają mniej więcej tak:
 
 ![](Marble%20Diagrams/Example.png)
 
-### Generator operators
+### Generator operatorów
 
 There are a bunch of "primitive streams" that can be easily generated by one of the built-in operators. Some of these represent the most basic variations of streams. These operators can be looked at like `int.MinValue` / `int.MaxValue`, `Task.FromResult()` / `Task.FromException()` / `Task.FromCancelled()`, `Enumerable.Range()`, etc.
 
