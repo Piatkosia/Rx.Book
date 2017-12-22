@@ -1002,15 +1002,16 @@ Możesz wybrać określenie tylko rzeczywisty typ parametru `args` (jak możesz 
 
 #### FromEvent
 
-In case you have an event that doesn't follow this pattern, your life will be slightly more complicated.
+Jeśli masz zdarzenie niepasujące do tego schematu, twoje życie będzie nieco bardziej skomplikowane.
 
-Let's assume you have an event like this:
+Załóżmy, że masz takie zdarzenie:
+
 
 ``` csharp
 public event Action<string, int, double> MySpecialEvent;
 ```
 
-In this case your converter operator will look like this:
+W takim przypadku twój konwerter będzie wyglądał następująco:
 
 ```csharp
 var source = Observable.FromEvent<Action<string, int, double>, Tuple<string, int, double>>(
@@ -1019,19 +1020,19 @@ var source = Observable.FromEvent<Action<string, int, double>, Tuple<string, int
     eventHandler => MySpecialEvent -= eventHandler);
 ```
 
-So let's see what is happening here.
+Spójrzmy co tu się dzieje.
 
-First of all, you have to call the `FromEvent` operator, which requires 2 generic type parameters, the type of the event and the type of the event arguments. The second one is necessary because in the world of events when an event happens, a subscribed method gets called potentially with many parameters, but in Rx world when an event happens, a new object is placed into the stream. So you have to wrap the received parameters into one object.
+Na samym początku wywołujemy operator `FromEvent`, który wymaga dwóch parametrów generycznych, typu zdarzenia i typu obiektu z argumentami zdarzenia. Drugi jest konieczny, ponieważ w świecie zdarzeń, kiedy zdarzenie się dzieje, subskrybowana metoda jest wywoływana potencjalnie z wieloma parametrami, ale w świecie Rx, gdy zdarzenie ma miejsce, nowy obiekt jest umieszczany w strumieniu. Musisz więc opakować odebrane parametry do jednego obiektu.
 
 `MySpecialEventHandler(string s, int i, double d)` VS `OnNext(Tuple<string, int, double> values)`
 
-Let's see the method parameters. After providing the type of the `event` and the type of the `args`, Rx internally prepares and exposes an `OnNext<TArgs>` method to push new elements into the stream. So here's what's happening:
+Spójrzmy na parametry metody.  Po dostarczeniu typu parametru `event` i typu parametru `args`, Rx wewnętrznie przygotuje i ujawni metodę `OnNext<TArgs>` służącą do "wpychania" nowych elementów do strumienia. Oto co się dzieje: 
 
-The operator gives a reference to this `OnNext` function to you, and expects you to return a method that matches the signature of the original event, so it can be used as an event handler, and because it has a reference to the `OnNext` method, it should do the conversion from the method parameters to the `Tuple` object and push it into the stream.
+Operator daje ci referencję do funkcji `OnNext`  i spodziewa się od ciebie zwrócenie metody pasującej do sygnatury oryginalnego zdarzenia, więc może być to użyte jako "event handler", i ponieważ ma referencję do metody `OnNext`, powinien wykonać konwersję z parametrów metody na obiekt `Tuple` i wepchnąć go do strumienia.
 
-Once you got your head around this rather complicated line, the last 2 parameters of the method are fairly simple, you just get a reference to the event handler (prepared by the system) that you have to subscribe to and unsubscribe from the original `event`.
+Kiedy już zorientujesz się w tej dość skomplikowanej linijce, ostatnie dwa parametry metody są dość proste, po prostu dostajesz referencję do "event handlera" (przygotowaną przez system), którą musisz zasubskrybować i anulować subskrypcję oryginalnego `event`u.
 
-It's worth mentioning that this example is the worst case scenario. If your event doesn't have any parameters or only has one, you don't have to bother with this complicated conversion logic, you just have to provide the subscribe / unsubscribe functions.
+Warto wspomnieć, że ten przykład jest najgorszym scenariuszem. Jeśli twoje zdarzenie nie ma żadnych parametrów lub ma tylko jeden, nie musisz zawracać sobie głowy tą skomplikowaną logiką konwersji, musisz po prostu podać funkcje subskrypcji / anulowania subskrybcji.
 
 ### Hot and Cold observables
 
