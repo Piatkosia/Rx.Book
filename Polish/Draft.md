@@ -795,7 +795,7 @@ Jak mogłeś już zobaczyć w poprzednich rozdziałach, Rx u   podstaw umożliwi
 
 Jako podsumowanie, podstawowymi interfejsami są `IObservable<T>` i `IObserver<T>`.
 
-`IObservalbe<T>` jest interfejsem obiektu obserwowalnego, dającym możliwść zasubskrybowania i "obserwacji" wyłącznie za pomocą metody `Subscribe()`.
+`IObservalbe<T>` jest interfejsem obiektu obserwowalnego, dającym możliwość zasubskrybowania i "obserwacji" wyłącznie za pomocą metody `Subscribe()`.
 
 Interfejs `IObserver<T>`  definiuje jak wyglądają obiekty obserwujące. Mają metodę `OnNext()`, która jest wywoływana każdorazowo, gdy emitowane jest nowe zdarzenie (więc 0 lub więcej razy) oraz metody `OnError()` i `OnCompleted()`, które będą wywołane kiedy obserwator zakończy działanie, czy to naturalnie, czy przez błąd. Dwie ostatnie metody są metodami kończącymi i przez cały cykr życia obserwowanego obiektu można je wywołać 0 albo 1 raz. Są one wykluczające się nawzajem, co oznacza, że nie można ich wywołać dla tego samego obiektu obserwowalnego.
 
@@ -972,11 +972,11 @@ Mimo że metoda rozszerzająca istnieje i możesz z niej korzystać, a w niektó
 
 #### FromAsync
 
-If you have an asynchronous operation that is represented by a `Task`, you should use the `FromAsync()` operator to convert it to an observable stream. The reason for that are 2 words: lazy evaluation. 
+Jeśli masz operację asynchroniczną reprezentowaną przez `Task`, powinieneś użyć operatora` FromAsync () `, aby przekonwertować go do obserwowalnego strumienia. Powodem tego są 2 słowa: leniwa ewaluacja.
 
-The `ToObservable()` operator can only act on an existing `Task` object. If you have some kind of retry logic defined in your stream description, in case of using the `ToObservable()` operator, it will always go back to the same `Task` object and query its state. There is no way to somehow rerun the function that produced that `Task`.
+Operator `ToObservable ()` może działać tylko na istniejącym obiekcie `Task`. Jeśli masz jakąś logikę ponawiania zdefiniowaną w twoim opisie strumienia, w przypadku użycia operatora `ToObservable ()`, zawsze powróci on do tego samego obiektu `Task` i zapyta o jego stan. Nie ma sposobu, aby jakoś ponownie uruchomić funkcję, która wytworzyła tego `Task`a.
 
-But if you use the `FromAsync()` operator that wraps the function itself that produces the `Task`, if you re-subscribe (for example because of a failure), it will actually re-execute the function, producing a new `Task` with that, so at least you have the chance to recover from a transient error.
+Ale jeśli użyjesz operatora `FromAsync ()`, który opakuje samą funkcję, która tworzy `Task`, jeśli ponownie zasubskrybujesz (na przykład z powodu awarii), to faktycznie ponownie uruchomi funkcję, tworząc nowego `Task`a z tym, więc przynajmniej masz szansę na przetrwanie przejściowych błędów.
 
 ```csharp
 var goodExample = Observable.FromAsync(SomeAsyncOperation);
@@ -986,17 +986,17 @@ var goodExample = Observable.FromAsync(SomeAsyncOperation);
 
 #### FromEventPattern
 
-Another good candidate to convert to Rx stream is the .NET event.
+Kolejnym dobrym kandydatem do przekonwertowania na strumień Rx są zdarzenia (`event`y)  .NETowe.
 
-Most cases when you have to deal with events they have a typical signature that looks something like `(object sender, EventArgs args)`. As long as the event follows this signature, you can use a simplified way to convert these events to observables, like this:
+Większość przypadków, takie `event`y mają sygnaturę wyglądającą mniej więcej jak `(object sender, EventArgs args)`. Tak długo, jak zdarzenie jest zgodne z tą sygnaturą, możesz użyć uproszczonego sposobu konwersji tych zdarzeń na obserwowalne, w następujący sposób:
 
 ```csharp
 var source = Observable.FromEventPattern<KeyRoutedEventArgs>(this, nameof(this.KeyDown));
 ```
+Możesz zdecydować, że nie będziesz określał żadnego typu parametru generycznego, a w takim przypadku domyślnie zostanie użyta najbardziej uniwersalna kombinacja `(object, EventArgs)`.
 
-You can choose not to specify any generic type parameter in which case it will default to the most generic `(object, EventArgs)` combination. 
+Możesz wybrać określenie tylko rzeczywisty typ parametru `args` (jak możesz zobaczyć powyżej), albo typ zarówno dla parametru `sender` jak i `args`.
 
-You can choose to specify only the actual type of the `args` parameter (as you can see in the example above), or to explicitly specify both the type of the `sender` and the `args` parameters.
 
 ![](Marble%20Diagrams/FromEvent.png)
 
