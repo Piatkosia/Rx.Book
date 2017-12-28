@@ -1111,9 +1111,9 @@ Diagram marmurkowy dla tego przypadku wygląda mniej więcej tak:
 
 #### Tworzenie zimnych obserwowalnych 
 
-The logic behind "cooling down" an observable is similar to the logic discussed about Hot observables, but obviously it will go the other way around. In this case you will have to use the combination of `Replay()` and `Connect()` methods. The `Replay()` method will wrap the original (Hot) observable into a caching stream, but it will only start recording and emitting the values after the `Connect()` method has been called.
+Logika stojąca za "ochładzaniem" obserwowalnego jest podobna do logiki omawianej w temacie gorących obserwowalnych, ale oczywiście będzie odwrotna. W takim przypadku będziesz musiał użyć kombinacji metod `Replay ()` i `Connect ()`. Metoda `Replay ()` zapakuje oryginalnego (Hot) obserwowalnego do strumienia buforowania, ale zacznie nagrywanie i emisję wartości po wywołaniu metody `Connect ()`.
 
-As a demonstration let's just create a Hot observable and make 2 subscriptions to it to prove that it's Hot.
+Jako demonstracja stwórzmy gorącego obserwowalnego i zróbmy dwie subskrypcje, by udowodnić, że jest gorący.
 
 ```csharp
 var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
@@ -1123,16 +1123,16 @@ var source = Observable
     .FromEventPattern(timer, nameof(timer.Tick))
     .Select(e => DateTime.Now);
 
-Console.WriteLine($"Subscribing with #1 observer at {DateTime.Now}");
+Console.WriteLine($"Subskrypcja #1 obserwatora o  {DateTime.Now}");
 this.Subscribe(source, "Hot Observable - #1");
 
 await Task.Delay(TimeSpan.FromSeconds(3));
 
-Console.WriteLine($"Subscribing with #2 observer at {DateTime.Now}");
+Console.WriteLine($Subskrypcja #2 obserwatora o  {DateTime.Now}");
 this.Subscribe(source, "Hot Observable - #2");
 ```
 
-After running this example, you can clearly see that you only receive events with dates after the date of the subscription.
+Po uruchomieniu tego przykładu możesz wyraźnie zobaczyć, że otrzymujesz tylko zdarzenia z datami po dacie subskrypcji.
 
 ![](Marble%20Diagrams/HotObservableSample.png)
 
