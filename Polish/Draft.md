@@ -1034,17 +1034,17 @@ Kiedy już zorientujesz się w tej dość skomplikowanej linijce, ostatnie dwa p
 
 Warto wspomnieć, że ten przykład jest najgorszym scenariuszem. Jeśli twoje zdarzenie nie ma żadnych parametrów lub ma tylko jeden, nie musisz zawracać sobie głowy tą skomplikowaną logiką konwersji, musisz po prostu podać funkcje subskrypcji / anulowania subskrybcji.
 
-### Hot and Cold observables
+### Gorące i zimne obserwowalne
 
-Even though so far I didn't talk about it explicitly, you might have noticed that one of the main characteristic of observables is that they are only getting activated when you subscribe to them (and this is something that you should pay attention to if/when you design a custom observable).
+Chociaż do tej pory nie mówiłem o tym wyraźnie, mogłeś zauważyć, że jedną z głównych cech obserwowalnych jest to, że aktywują się tylko wtedy, gdy je subskrybujesz (i to jest coś, na co powinieneś zwrócić uwagę, jak projektujesz niestandardowego obserwowalnego).
 
-There are real-time data sources, like .NET events (`PointerMoved`, `Click`, `KeyDown`, etc.), data sources that you can observe, but can't really control when they emit new events, and they've likely been virtually active before you subscribed to them. These are called *Hot Observables*, and I think the best analogy to these kind of observables is reading the value of a globally accessible field or property... at any given time if multiple "observers" try to read the value they will be pointed to the same reference, to the same source and they will see the same value.
+Mamy źródła danych w czasie rzeczywistym, jak zdarzenia .NETowe  (`PointerMoved`, `Click`, `KeyDown`, itd.),  źródła danych, które można obserwować, ale nie ma  rzeczywistej kontroli nad tym, kiedy one emitują nowe zdarzenia, i były prawdopodobnie aktywne zanim je zasubskrybowałeś. Nazywamy je *Hot Observables (gorącymi obserwowalnymi)*, i myślę, że najlepszą analogią do tego typu obserwowalnych jest odczyt wartości globalnie dostępnego pola lub własności (property) ... i w każdej chwili gdy wielu "obserwatorów" odczytuje wartość, będą oni przekierowani do tej samej referencji, do tego samego źródła i zobaczą tę samą wartość. 
 
-And there are data sources, like an asynchronous method call, that you can still treat as an Rx stream, but you know that the service call will be triggered by your subscription to the (`FromAsync()`) observable stream. You know that any kind of notification will only appear in the stream after you subscribed to it, because the subscription triggered the execution of the underlying logic that pushes notifications in the stream. These are called *Cold Observables*, and a good analogy to them is when you retrieve a value through some kind of getter or generator logic, every "observer" will retrieve the value by executing that piece of logic that returns that value, so there is a good chance that they will see different values.
+I są źródła danych, takie jak metody wywoływane asynchronicznie, które nadal można traktować jako strumień Rx, ale wiadomo, że wywołanie usługi zostanie wywołane przez subskrypcję  strumienia obserwowalnego(`FromAsync ()`). Wiesz, że każde powiadomienie pojawi się w strumieniu dopiero po jego zasubskrybowaniu, ponieważ subskrypcja wyzwoliła wykonanie podstawowej logiki, która wypycha powiadomienia w strumieniu. Są one nazywane * Cold Observables (zimne obserwowalne)*, a dobra analogia do nich polega na tym, że gdy odzyskasz jakąś wartość za pomocą jakiejś logiki gettera lub generatora, każdy "obserwator" pobierze wartość, wykonując ten kawałek logiki, który zwraca tę wartość, więc tam to duża szansa, że zobaczą różne wartości.
 
-Based on your needs, you can easily switch between these behaviours and turn a Cold observable into a Hot observable, or the other way around by using the `Publish()` or the `Replay()` operators.
+W zależności od potrzeb można łatwo przełączać się pomiędzy tymi zachowaniami i przekształcać zimnego obserwowalnego w gorącego lub odwrotnie, używając operatorów `Publish ()` lub `Replay ()`.
 
-#### Creating hot observables
+#### Tworzenie gorących obserwowalnych
 
 To turn a Cold observable into a Hot one, you will have to use the combination of the `Publish()` and the `Connect()` methods. The `Publish()` will prepare you an observable object that wraps your original observable stream and broadcasts its values to all the subscribers. And in this case instead of the `Subscribe()` call, calling the `Connect()` method will activate the stream and trigger the subscription chain in the wrapped observable, and with that the execution/activation of the underlying data source that will put events into the stream.
 
