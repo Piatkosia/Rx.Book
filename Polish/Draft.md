@@ -1046,70 +1046,70 @@ W zależności od potrzeb można łatwo przełączać się pomiędzy tymi zachow
 
 #### Tworzenie gorących obserwowalnych
 
-To turn a Cold observable into a Hot one, you will have to use the combination of the `Publish()` and the `Connect()` methods. The `Publish()` will prepare you an observable object that wraps your original observable stream and broadcasts its values to all the subscribers. And in this case instead of the `Subscribe()` call, calling the `Connect()` method will activate the stream and trigger the subscription chain in the wrapped observable, and with that the execution/activation of the underlying data source that will put events into the stream.
+Aby zamienić zimnego obserwowalnego w gorącego, trzeba użyć kombinacji metod `Publish()` i `Connect()`. `Publish()` przygotuje ci obiekt obserwowalny, który opakuje oryginalny strumień obserwowalny i roześle ich wartości do wszystkich subskrybentów. I w tym przypadku  And in this case zamiast wywołania metody `Subscribe()`, wywołujemy metodę  `Connect()`, która aktywuje strumień i wyzwala łańcuch subskrypcji w opakowanym obserwowalnym,  a następnie wykonuje/aktywuje źródła danych, które umieści zdarzenia w strumieniu.
 
-To demonstrate this let's create a simple Cold observable using the `Interval()` operator. It will generate a new stream for each of its subscribers instead of sharing the same one. You can easily see it in action with the following little sample:
+Aby to zademonstrować, stwórzmy prostego zimnego obserwowalnego używając operatora `Interval()`. To stworzy nowy strumień dla każdego subskrybenta, zamiast współdzielić jeden. Możesz łatwo zobaczyć to w akcji  w następującym przykładzie:
 
 ```csharp
 var source = Observable.Interval(TimeSpan.FromSeconds(1));
 
-// Subscribe with the 1st observer
+// Subskrypcja pierwszego obserwatora
 this.Subscribe(source, "Cold Observable - #1");
 
-// Wait 3 seconds
+// Czekanie 3 sekund
 await Task.Delay(TimeSpan.FromSeconds(3));
 
-// Subscribe with the 2nd observer
+// Subskrypcja drugiego obserwatora
 this.Subscribe(source, "Cold Observable - #2");
 ```
 
-If you run this, you will see events popping up on your screen from the two subscriptions like this:
+Jeśli to uruchomisz, zobaczysz zdarzenia wyskakujące na ekran z dwóch subskrypcji, jak to: 
 
 ![](Marble%20Diagrams/ColdObservableSample.png)
 
-Now it's time to turn this Cold observable into a Hot one by using the combination of the `Publish()` and `Connect()` methods.
+Teraz nadeszła chwila na zmianę zimnego obserwowalnego w gorącego, poprzez kombinację metod  `Publish()` i `Connect()`.
 
 ```csharp
 var originalSource = Observable.Interval(TimeSpan.FromSeconds(1));
 var publishedSource = originalSource.Publish();
 
-// Call Connect to activate the source and subscribe immediately with the 1st observer
+//  Wywołanie Connect w celu aktywacji źródła i subskrypcji pierwszego obserwatora
 publishedSource.Connect();
 this.Subscribe(publishedSource, "Publish - #1");
 
-// Wait 3 seconds
+// czekanie 3s
 await Task.Delay(TimeSpan.FromSeconds(3));
 
-// Subscribe with the 2nd observer
+// Subskrypcja drugiego obserwatora.
 this.Subscribe(publishedSource, "Publish - #2");
 ```
 
-The code above shows you how to publish a stream and turn it into a Hot observable. As you can see you are subscribing to the `publishedSource` and because you immediately call `Connect()` and subscribe with the 1st observable, it will immediately start producing new values. And you can also see that this is a Hot observable because after waiting 3 seconds and subscribing the 2nd observable, it will only receive values that have been emitted from the source after the subscription, meaning it will never see the values the source produced before the subscription happened.
+Powyższy kod pokazuje jak opublikować strumień i zmienić w gorącego obserwowalnego. Jak widać, subskrybujemy do `publishedSource` i ponieważ natychmiastowo wywołujemy  `Connect()` i subskrybujemy z pierwszym obserwowalnym, natychmiast zaczyna produkować nowe wartości. Można także zauważyć że to gorący obserwowalny, ponieważ po zaczekaniu 3 sekund i subskrypcji drugiego obserwowalnego, dostanie tylko wartości, które zostały wyemitowane ze źródła po subskrypcji, co oznacza, że nigdy nie zobaczy wartości wygenerowanych przez źródło przed subskrypcją.
 
 ![](Marble%20Diagrams/PublishSample1.png)
 
-And last but not least, try to put the `Connect()` call after the 3 second delay to demonstrate that a source is activated by the `Connect()` call and not the `Subscribe()` as it is the case for regular type of observables. Even though you immediately subscribe to the `publishedSource` with the 1st observer, it only gets activated 3 seconds later when you call the `Connect()` and subscribe with the 2nd observer. In this case both observers will see the exact same events.
+I "last but not least", spróbuj umieścić wywołanie `Connect()` po 3 sekundowym opóźnieniu, aby zademonstrować, że źródło jest aktywowane po wywołaniu  `Connect()` a nie po wywołaniu `Subscribe()` jak to się dzieje w standardowych typach obserwowalnych. Nawet jeśli od razu zasubskrybujesz `publishedSource` pierwszym obserwatorem, aktywuje się on 3 sekundy później niż wywołanie `Connect()` i subskrypcja drugim obserwatorem. W tym przypadku obaj obserwatorzy zobaczą te same zdarzenia.
 
 ```csharp
 var originalSource = Observable.Interval(TimeSpan.FromSeconds(1));
 var publishedSource = originalSource.Publish();
 
-// Subscribe to the not-yet-activated source stream with the 1st observer
+// Subskrypcja do jeszcze-nie-aktywowanego strumienia źródłowego pierwszym obserwatorem. 
 this.Subscribe(publishedSource, "Publish - #1");
 
-// Wait 3 seconds
+// czekanie 3s 
 await Task.Delay(TimeSpan.FromSeconds(3));
 
-// Call Connect to activate the source and subscribe with the 2nd observer
+// Wywołanie Connect by aktywować źródło i subskrypcja z drugim obserwatorem 
 publishedSource.Connect();
 this.Subscribe(publishedSource, "Publish - #2");
 ```
 
-The marble diagram for this case looks something like this:
+Diagram marmurkowy dla tego przypadku wygląda mniej więcej tak: 
 
 ![](Marble%20Diagrams/PublishSample2.png)
 
-#### Creating cold observables
+#### Tworzenie zimnych obserwowalnych 
 
 The logic behind "cooling down" an observable is similar to the logic discussed about Hot observables, but obviously it will go the other way around. In this case you will have to use the combination of `Replay()` and `Connect()` methods. The `Replay()` method will wrap the original (Hot) observable into a caching stream, but it will only start recording and emitting the values after the `Connect()` method has been called.
 
