@@ -394,7 +394,7 @@ public async Task<IEnumerable<string>> ServiceCall_Timeout(string query)
 }
 ```
 
-Uruhamiasz wywołanie serwisu i `Delay` równolegle i czekasz aż jeden z nich się skończy. W zależności od tego który to będzie operację uznajesz za udaną (lub nieudaną z jakiegoś powodu) albo za timeout. 
+Uruchamiasz wywołanie serwisu i `Delay` równolegle i czekasz aż jeden z nich się skończy. W zależności od tego który to będzie operację uznajesz za udaną (lub nieudaną z jakiegoś powodu) albo za timeout. 
 
 ### Retry
 
@@ -614,7 +614,7 @@ resultsServiceHelper.CallBack += this.CallBack;
 resultsServiceHelper.ErrorCallBack += this.ErrorCallBack;
 ```
 
-Teraz dorzućmy `CallBack` i `ErrorCallBack` z przykłądową implementacją.
+Teraz dorzućmy `CallBack` i `ErrorCallBack` z przykładową implementacją.
 
 ```csharp
 private void CallBack(IEnumerable<string> items)
@@ -1032,7 +1032,7 @@ Operator daje ci referencję do funkcji `OnNext`  i spodziewa się od ciebie zwr
 
 Kiedy już zorientujesz się w tej dość skomplikowanej linijce, ostatnie dwa parametry metody są dość proste, po prostu dostajesz referencję do "event handlera" (przygotowaną przez system), którą musisz zasubskrybować i anulować subskrypcję oryginalnego `event`u.
 
-Warto wspomnieć, że ten przykład jest najgorszym scenariuszem. Jeśli twoje zdarzenie nie ma żadnych parametrów lub ma tylko jeden, nie musisz zawracać sobie głowy tą skomplikowaną logiką konwersji, musisz po prostu podać funkcje subskrypcji / anulowania subskrybcji.
+Warto wspomnieć, że ten przykład jest najgorszym scenariuszem. Jeśli twoje zdarzenie nie ma żadnych parametrów lub ma tylko jeden, nie musisz zawracać sobie głowy tą skomplikowaną logiką konwersji, musisz po prostu podać funkcje subskrypcji / anulowania subskrypcji.
 
 ### Gorące i zimne obserwowalne
 
@@ -1046,7 +1046,7 @@ W zależności od potrzeb można łatwo przełączać się pomiędzy tymi zachow
 
 #### Tworzenie gorących obserwowalnych
 
-Aby zamienić zimnego obserwowalnego w gorącego, trzeba użyć kombinacji metod `Publish()` i `Connect()`. `Publish()` przygotuje ci obiekt obserwowalny, który opakuje oryginalny strumień obserwowalny i roześle ich wartości do wszystkich subskrybentów. I w tym przypadku  And in this case zamiast wywołania metody `Subscribe()`, wywołujemy metodę  `Connect()`, która aktywuje strumień i wyzwala łańcuch subskrypcji w opakowanym obserwowalnym,  a następnie wykonuje/aktywuje źródła danych, które umieści zdarzenia w strumieniu.
+Aby zamienić zimnego obserwowalnego w gorącego, trzeba użyć kombinacji metod `Publish()` i `Connect()`. `Publish()` przygotuje ci obiekt obserwowalny, który opakuje oryginalny strumień obserwowalny i roześle ich wartości do wszystkich subskrybentów. I w tym przypadku zamiast wywołania metody `Subscribe()`, wywołujemy metodę  `Connect()`, która aktywuje strumień i wyzwala łańcuch subskrypcji w opakowanym obserwowalnym,  a następnie wykonuje/aktywuje źródła danych, które umieści zdarzenia w strumieniu.
 
 Aby to zademonstrować, stwórzmy prostego zimnego obserwowalnego używając operatora `Interval()`. To stworzy nowy strumień dla każdego subskrybenta, zamiast współdzielić jeden. Możesz łatwo zobaczyć to w akcji  w następującym przykładzie:
 
@@ -1136,7 +1136,7 @@ Po uruchomieniu tego przykładu możesz wyraźnie zobaczyć, że otrzymujesz tyl
 
 ![](Marble%20Diagrams/HotObservableSample.png)
 
-Now, just like in the previous example, let's try to "cool it down" by using the `Replay()` and `Connect()` methods. In the first example call the `Connect()` immediately, meaning this Cold observable will start caching the events of the underlying Hot observable immediately, and every time someone subscribes to this cold observable, they will receive the whole history of events since the activation of the stream.
+Teraz, tak jak w poprzednim przykładzie, "ochłodźmy to" przez użycie metod `Replay()` i `Connect()`. W pierwszym prykładzie wywołajmy  `Connect()` natychmiast, aby zimny obserwowalny zaczął cache'ować zdarzenia gorącego obserwowalnego natychmiast i każdy subskrybent zimnego obserwowalnego będzie otrzymywał pełną historię zdarzeń od momentu aktywacji strumienia.
 
 ```csharp
 var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
@@ -1160,11 +1160,12 @@ Console.WriteLine($"Subscribing with #2 observer at {DateTime.Now}");
 this.Subscribe(replayedSource, "Replay - #2");
 ```
 
-The event timelines will look something like this:
+Harmonogram zdarzeń będzie wyglądał mniej więcej tak:
 
 ![](Marble%20Diagrams/ReplaySample1.png)
 
-And just to keep the tradition, check what happens if you call `Connect()` after the 3 second delay.
+Aby tradycji stało się za dość, zobaczmy co się stanie, jak wywołamy `Connect()` po 3 sekundowym opóźnieniu.
+
 
 ```csharp
 var timer = new DispatcherTimer { Interval = TimeSpan.FromSeconds(1) };
@@ -1188,8 +1189,7 @@ Console.WriteLine($"Subscribing with #2 observer at {DateTime.Now}");
 this.Subscribe(replayedSource, "Replay - #2");
 ```
 
-Events will only get recorded (and emitted) after the activation of the cold observable.
-
+Zdarzenia będą nagrywane (i emitowane) tylko po aktywacji zimnego obserwowalnego. 
 ![](Marble%20Diagrams/ReplaySample2.png)
 
 #### RefCount
