@@ -1194,18 +1194,18 @@ Zdarzenia będą nagrywane (i emitowane) tylko po aktywacji zimnego obserwowalne
 
 #### RefCount
 
-As you can see it's a little bit cumbersome to deal with these `IConnectableObservable`s, you have to manually call the `Connect()` when you want it to start doing its job, and normally you also have to keep track of the subscribers and make sure you dispose the underlying subscription if it's no longer needed.
+Jak widać, obsługa tych `IConnectableObservable`'i jest trochę kłopotliwa, musisz ręcznie wywołać `Connect ()`, gdy chcesz, aby zaczął on wykonywać swoją pracę, i musisz też normalnie śledzić subskrybentów i upewnić się, że "zdisposujesz" subskrypcję, gdy nie będzie już ona potrzebna.  
 
-To deal with these complications, you can use the `RefCount()` operator that does all of these for you. It will wrap the `IConnectableObservable` and activate it after the first subscriber, keeps track of the number of subscribers, and when there are no more, it disposes the underlying observable.
+Aby poradzić sobie z tymi komplikacjami, możesz użyć operatora `RefCount ()`, który wykonuje to wszystko za ciebie. Opakuje on `IConnectableObservable` i aktywuje go po pierwszym subskrybencie, śledzi liczbę subskrybentów, a gdy nie ma już więcej, sam ubije obserwowalnego.
 
-To demonstrate lets do the following.
-* Create a Cold observable
-* Make it Hot using the combination of `Publish()` and `RefCount()`
-* Make a subscription (#1), notice that it immediately gets activated, no need to call `Connect()` explicitly
-* Wait a couple of seconds
-* Make an other subscription (#2), to verify it's Hot
-* Dispose subscription #1 and #2, to demonstrate that it will dispose the underlying stream as well
-* Make a third subscription to show that it will activate a new subscription to the underlying stream
+W celach demonstracyjnych wykonaj następujące czynności.
+* Stwórz zimnego obserwowalnego
+* Zrób to używając kombinacji `Publish ()` i `RefCount ()`
+* Zrób subskrypcję (# 1), zauważ, że natychmiast się aktywuje, nie ma potrzeby bezpośredniego wywoływania `Connect ()`
+* Poczekaj kilka sekund
+* Zrób kolejną subskrypcję (# 2), aby sprawdzić, czy jest gorąca
+* Usuń subskrypcję nr 1 i nr 2, aby zademonstrować, że będzie ona również udostępniała strumień bazowy
+* Zrób trzecią subskrypcję, aby pokazać, że aktywuje nową subskrypcję do strumienia
 
 ```csharp
 var hotInterval = Observable
@@ -1227,11 +1227,11 @@ subscription2.Dispose();
 var subscription3 = this.Subscribe(hotInterval, "RefCount #3");
 ```
 
-The timeline for this will look something like this:
+Linia czasu dla tego będzie wyglądać mniej więcej tak:
 
 ![](Marble%20Diagrams/RefCount.png)
 
-### Subjects
+### Tematy
 
 Subjects are special kind of types that implements both the `IObservable` and `IObserver` interfaces. They will usually sit somewhere in the middle of the stream. Or you can use them as a source that you can use as an entry point to the stream, and you can manually call the `OnNext()`, `OnError()` and `OnCompleted()` methods on it. In some samples later you will see this kind of usage.
 
