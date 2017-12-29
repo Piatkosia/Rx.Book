@@ -1231,22 +1231,21 @@ Linia czasu dla tego będzie wyglądać mniej więcej tak:
 
 ![](Marble%20Diagrams/RefCount.png)
 
-### Tematy
+### Tematy (Subjects)
 
-Subjects are special kind of types that implements both the `IObservable` and `IObserver` interfaces. They will usually sit somewhere in the middle of the stream. Or you can use them as a source that you can use as an entry point to the stream, and you can manually call the `OnNext()`, `OnError()` and `OnCompleted()` methods on it. In some samples later you will see this kind of usage.
+Tematy to specjalny rodzaj typów, które implementują oba interfejsy, `IObservable` i`IObserver`. Zwykle siedzą one gdzieś w środku strumienia. Albo możesz użyć ich jako źródła, które może być użyte jako punkt wejściowy do źródła, i wtedy musisz wywołać na tym ręcznie  metody `OnNext()`, `OnError()` i `OnCompleted()`. W niektórych przykładach będziesz mógł zaobserwować tego rodzaju użycie.
 
-#### Subject
+#### Klasa Subject
 
-The `Subject` class is kind of an alternative to the `Publish()` + `Connect()` method pair. Basically once you subscribe it to some observable, it will turn it into a hot observable, maintaining only 1 connection to the original source and broadcasting everything that comes through to its own subscribers.
+Klasa `Subject` jest jakimś rodzajem alternatywy dla pary metod `Publish()` + `Connect()`.Zasadniczo, gdy zasubskrybujesz go do jakiegoś obserwowalnego, zmieni go w gorącego obserwowalnego, utrzymując tylko 1 połączenie z pierwotnym źródłem i roześle wszystko, co dostanie do swoich subskrybentów.
 
 ```csharp
-// Create the source (cold) observable
+// Stworzenie źródła zimnego obserwowalnego
 var interval = Observable.Interval(TimeSpan.FromSeconds(1));
 
 var subject = new Subject<long>();
 
-// Subscribe the subject to the source observable
-// With this you activate the source observable
+// Subskrypcja tematu do źródła obserwowalnego. Po tym się aktywuje.
 interval.Subscribe(subject);
 
 this.Subscribe(subject, "Subject #1");
@@ -1254,7 +1253,8 @@ await Task.Delay(TimeSpan.FromSeconds(3));
 this.Subscribe(subject, "Subject #2");
 ```
 
-As mentioned above, you can also use subjects as sources to manually push events into the stream by calling the `OnNext()`, `OnCompleted()` or `OnError()` methods.
+Jak wspomniano powyżej, można również użyć tematów jako źródeł ręcznego przesyłania zdarzeń do strumienia, wywołując metody `OnNext ()`, `OnCompleted ()` lub `OnError ()`.
+
 
 ```csharp
 var subject = new Subject<string>();
