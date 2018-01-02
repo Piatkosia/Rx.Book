@@ -1266,11 +1266,11 @@ subject.OnCompleted();
 subject.OnNext("4");
 ```
 
-In this example you will receive the events "2" and "3". You won't receive "1" because `Subject` is a hot observable and it happened before the subscription, and you also won't receive "4" because it happened after the `OnCompleted` event, which is a terminating event and implicitly disposes the whole pipeline (or more precisely the connections between the pieces of the pipeline).
+W tym przykładzie odbierzesz zdarzenie "2" i "3". Nie odbierzesz "1", ponieważ `Subject` jest gorącym obserwowalnym, a "1" został wyemitowany przed subskrypcją. Nie odbierzesz też "4", ponieważ się zdarzył po zdarzeniu  `OnCompleted`, które zrywa i ubija całą rurkę (albo bardziej precyzyjnie połączenie pomiędzy kawałkami rurki).
 
-#### ReplaySubject
+#### Klasa ReplaySubject
 
-The `ReplaySubject` class is sort of an alternative to the `Replay()` + `Connect()` method pair. Once you subscribe it to an observable stream, it will remember everything that flows through it, and will "replay" all the events for each of its new subscribers.
+klasa `ReplaySubject` jest pewnego rodzaju alternatywą dla pary metod `Replay()` + `Connect()`. Jak raz zasubskrybujesz do strumienia obserwowalnego, będzie pamiętać wszystko co przezeń przepłynie i będzie odtwarzać zdarzenia każdemu nowemu subskrybentowi.
 
 ```csharp
 var replaySubject = new ReplaySubject<string>();
