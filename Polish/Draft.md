@@ -422,8 +422,8 @@ Ale jeśli wywołanie zawiedzie, blok `try`-`catch` to łyknie i pozwoli pętli 
 
 ### Throttle
 
-Dławienie, sprawdzanie unikalności i obsługa wyścigów, to bardziej skomplikowane do implementacji zadania. Ze swojej natury odfiltrowywują niektóre żądania i nie zwracają z nich nic. Nie może być połączenia 1:1 pomiędzy żądaniem a odpowiedzą i będzie więcej żądań niż odpowiedzi. 
-Dławienie pozwala na zgłaszanie sugestii tak często, jak chcesz, ale wewnętrznie wysyła żądanie (i generuje jakąś odpowiedź) po tym, jak użytkownik nie dotknął klawiatury przez pół sekundy.
+Lejek, sprawdzanie unikalności i obsługa wyścigów, to bardziej skomplikowane do implementacji zadania. Ze swojej natury odfiltrowywują niektóre żądania i nie zwracają z nich nic. Nie może być połączenia 1:1 pomiędzy żądaniem a odpowiedzą i będzie więcej żądań niż odpowiedzi. 
+Lejek pozwala na zgłaszanie sugestii tak często, jak chcesz, ale wewnętrznie wysyła żądanie (i generuje jakąś odpowiedź) po tym, jak użytkownik nie dotknął klawiatury przez pół sekundy.
 
 
 Jeszcze raz, aby sprawdzić unikalność, możesz wysyłać tyle żądań ile chcesz, ale wewnętrznie tylko  będzie słało zapytania tylko wtedy, gdy będą się różnić od poprzedniego.
@@ -432,7 +432,7 @@ I sprawdzanie wyścigu odrzuci niektóre stare wywołania serwisowe, jeśli wys�
 
 To nas prowadzi do wzorca gdzie wywołanie serwisu nie będzie już bezpośrednio zwracać niczego, zmieni się w metodę z `void`em, a zamiast tego będzie można uzyskać najnowsze wyniki za pośrednictwem zdarzenia CallBack.
 
-Dławienie działa w prosty sposób: zapisujesz aktualny `DateTime` do  pola w instancji, czekasz jakiś czas (pół sekundy) i sprawdzasz różnicę między zapisanym a aktualnym `DateTime`  czy jest równa lub większa ustalonemu interwałowi "dławienia (throttling)". Jeśli jest, to znaczy że nic nie wywołało metody od kiedy czekamy (w przeciwnym wypadku różnica między zapisanym a aktualnym `DateTime` byłaby mniejsza niż ustalony interwał dławienia ), więc możemy przejść do wywołania serwisu i wysłania wyniku przez CallBack zdarzenia. 
+Lejek działa w prosty sposób: zapisujesz aktualny `DateTime` do  pola w instancji, czekasz jakiś czas (pół sekundy) i sprawdzasz różnicę między zapisanym a aktualnym `DateTime`  czy jest równa lub większa ustalonemu interwałowi "lejka (throttling)". Jeśli jest, to znaczy że nic nie wywołało metody od kiedy czekamy (w przeciwnym wypadku różnica między zapisanym a aktualnym `DateTime` byłaby mniejsza niż ustalony interwał dławienia ), więc możemy przejść do wywołania serwisu i wysłania wyniku przez CallBack zdarzenia. 
 
 ```csharp
 private readonly TimeSpan throttleInterval = TimeSpan.FromMilliseconds(500);
@@ -756,7 +756,7 @@ Tak jak w poprzednim rozdziale, stwórzmy pustą apkę UWP
 * W lewym panelu okna dialogowego wybierz `Windows / Universal` 
 * potem w prawym `Blank App (Universal Windows)`.
 * Dodaj Rx NuGet paczkę wpisując `PM> Install-Package System.Reactive` w konsoli managera pakietu
-* oraz Ix paczkę wpisując tamże `PM> Install-Package System.Interactive`. Jest to roszerzenie dla standardowych kolekcji, które dodaje trochę więcej użytecznych operatorów do katalogu operatorów LINQ.
+* oraz Ix paczkę wpisując tamże `PM> Install-Package System.Interactive`. Jest to rozszerzenie dla standardowych kolekcji, które dodaje trochę więcej użytecznych operatorów do katalogu operatorów LINQ.
 * Dodaj plik nowej klasy do projektu, która to klasa będzie zawierała trochę metod rozszerzających dla kontrolki `TextBlock`.<br/>
 Te metody rozszerzające pozwolą ci wypisywać na ekranie tekst linijka po linijce i będzie zostawiać tylko ostatnie 25 z nich.
 
@@ -783,7 +783,7 @@ public static class TextBlockExtensions
 </Grid>
 ```
 
-* Ze zdefiniowanymi metodami roszerzającymi `TextBlock` a, możesz teraz  zapisywać rzeczy na stronie w taki sposób:
+* Ze zdefiniowanymi metodami rozszerzającymi `TextBlock` a, możesz teraz  zapisywać rzeczy na stronie w taki sposób:
 
 ```csharp
 Console.WriteLine("Hello Rx");
@@ -799,7 +799,7 @@ Jako podsumowanie, podstawowymi interfejsami są `IObservable<T>` i `IObserver<T
 
 Interfejs `IObserver<T>`  definiuje jak wyglądają obiekty obserwujące. Mają metodę `OnNext()`, która jest wywoływana każdorazowo, gdy emitowane jest nowe zdarzenie (więc 0 lub więcej razy) oraz metody `OnError()` i `OnCompleted()`, które będą wywołane kiedy obserwator zakończy działanie, czy to naturalnie, czy przez błąd. Dwie ostatnie metody są metodami kończącymi i przez cały cykr życia obserwowanego obiektu można je wywołać 0 albo 1 raz. Są one wykluczające się nawzajem, co oznacza, że nie można ich wywołać dla tego samego obiektu obserwowalnego.
 
-Jak to się zwykle formuuje: `OnNext* (OnError | OnCompleted)?`
+Jak to się zwykle formułuje: `OnNext* (OnError | OnCompleted)?`
 
 Ostatnim punktem, nim się zgłębimy w szczegóły tego jak tworzyć i jak przekształcać istniejące asynchroniczne źródła danych (jak `event` czy `Task`) do strumieni obserwowalnych, rzućmy szybciutko okiem na subskrypcje i terminologię którą będziesz mógł zobaczyć w dalszej części książki.
 
@@ -1281,14 +1281,15 @@ this.Subscribe(replaySubject, "ReplaySubject #2");
 replaySubject.OnNext("3");
 ```
 
-In this example you can see that the `ReplaySubject` replays every event it flew through it to each of its subscribers.
+W tym przykładzie widać, że `ReplaySubject` odtwarza każde zdarzenie, które przeleciało przez niego do każdego z jego subskrybentów.
 
-The 1st subscription will immediately receive "1" after subscription, and later "2" and "3" as they appear. <br/>
-The 2nd subscription will immediately receive "1" and "2" after subscription, and later "3" as it appears.
+Pierwsza subskrypcja natychmiast odbierze "1" po zasubskrybowaniu, a w dalszej kolejności "2" i "3" po tym jak się pojawią.
+<br/>
+Druga subskrypcja natychmiast odbierze "1" i "2" po zasubskrybowaniu, a potem "3" gdy się pojawi.
 
 #### BehaviorSubject
 
-The `BehaviorSubject` is very similar to the regular `Subject`, so it's a hot observable, but it does an extra trick by also replaying the last element before the occurrence of a subscription. To make sure it can always provide a "last element" immediately on subscription, you have to provide a default value to it, so even if technically there was no event flowing through it, it can still provide this default value on subscription.
+`BehaviorSubject` jest bardzo podobny do zwykłego `Subject`, więc jest gorącym obserwowalnym, ale robi dodatkową sztuczkę, odtwarzając także ostatni element przed wystąpieniem subskrypcji. Aby mieć pewność, że zawsze może podać "ostatni element" bezpośrednio w subskrypcji, musisz podać mu wartość domyślną, więc nawet jeśli technicznie nie było żadnego zdarzenia przez niego przepływającego, nadal może podać tę domyślną wartość w subskrypcji.
 
 ```csharp
 var behaviorSubject = new BehaviorSubject<string>("0");
@@ -1301,13 +1302,13 @@ behaviorSubject.OnCompleted();
 this.Subscribe(behaviorSubject, "BehaviorSubject #3");
 ```
 
-The 1st subscription will see "0", "1", "2", "3" and "OnCompleted". <br/>
-The 2nd subscription will see "2", "3" and "OnCompleted". <br/>
-But the 3rd subscription, that happened after the stream have been terminated by the `OnCompleted()` call, will only see the "OnCompleted" event but not the last event before it.
+Pierwsza subskrypcja zobaczy "0", "1", "2", "3" i "OnCompleted". <br/>
+Druga zaś zobaczy "2", "3" i "OnCompleted". <br/>
+Ale trzecia, która miała miejsce po zakończeniu strumienia przez wywołanie "OnCompleted ()", będzie widzieć tylko zdarzenie "OnCompleted", ale nie ostatnie zdarzenie przed nim.
 
 #### AsyncSubject
 
-`AsyncSubject` caches the last element that flows through it and publishes it once it's source observable is terminated. Any future subscriptions to the subject will receive the same cached value. It's like keeping a reference to an asynchronous operation's `Task` object. This is also the kind of behaviour you can see when you `await` an `IObservable` stream, but more on that later.
+`AsyncSubject` łapie ostatni element, który przepływa przez niego i publikuje go po zakończeniu obserwowania źródła. Wszelkie przyszłe subskrypcje podmiotu będą otrzymywać tę samą złapaną wartość. To tak, jakby zachować referencję do obiektu `Task` operacji asynchronicznej. Jest to także rodzaj zachowania, które można zaobserwować, gdy wykonujesz `await` na strumieniu `IObservable`, ale o tym później.
 
 ```csharp
 var asyncSubject = new AsyncSubject<string>();
